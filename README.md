@@ -29,4 +29,11 @@ backend features will need; keep real credentials in the ignored `.env` file.
 The server now connects to MongoDB when it starts. A successful connection logs
 the database host. If the connection fails, the backend exits with code `1`.
 MongoDB must be available and `MONGODB_URI` must be set before starting the
-server. API models and routes will be added in later steps.
+server. The remaining data models and API routes will be added in later steps.
+
+## Backend: user model
+
+`backend/src/models/user.model.js` defines the MongoDB user record. Each user
+requires a full name, image URL, and Clerk ID. The Clerk ID has a unique index,
+and Mongoose records creation and update timestamps. Authentication endpoints
+that create and read these records will be added later.
