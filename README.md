@@ -37,3 +37,10 @@ server. The remaining data models and API routes will be added in later steps.
 requires a full name, image URL, and Clerk ID. The Clerk ID has a unique index,
 and Mongoose records creation and update timestamps. Authentication endpoints
 that create and read these records will be added later.
+
+## Backend: song model
+
+`backend/src/models/song.model.js` defines each track's title, artist, cover
+image URL, audio URL, and duration. A song can optionally reference an album by
+its MongoDB ID. Mongoose also records creation and update timestamps. The album
+model and song API will be added in later steps.
