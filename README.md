@@ -29,7 +29,7 @@ backend features will need; keep real credentials in the ignored `.env` file.
 The server now connects to MongoDB when it starts. A successful connection logs
 the database host. If the connection fails, the backend exits with code `1`.
 MongoDB must be available and `MONGODB_URI` must be set before starting the
-server. The remaining data models and API routes will be added in later steps.
+server. API routes and other services will be added in later steps.
 
 ## Backend: user model
 
@@ -51,3 +51,10 @@ API will be added in a later step.
 image URL, release year, and list of song IDs. Each song ID references the Song
 model. Mongoose records creation and update timestamps. Album and song routes
 will be added in later steps.
+
+## Backend: message model
+
+`backend/src/models/message.model.js` stores a sender's Clerk ID, a receiver's
+Clerk ID, and the message text. All three fields are required, and Mongoose
+records creation and update timestamps. Chat routes and real-time delivery will
+be added in later steps.
