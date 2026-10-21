@@ -49,8 +49,8 @@ API will be added in a later step.
 
 `backend/src/models/album.model.js` defines an album's title, artist, cover
 image URL, release year, and list of song IDs. Each song ID references the Song
-model. Mongoose records creation and update timestamps. Album and song routes
-will be added in later steps.
+model. Mongoose records creation and update timestamps. Song routes and album
+management endpoints will be added in later steps.
 
 ## Backend: message model
 
@@ -58,3 +58,11 @@ will be added in later steps.
 Clerk ID, and the message text. All three fields are required, and Mongoose
 records creation and update timestamps. Chat routes and real-time delivery will
 be added in later steps.
+
+## Backend: album read API
+
+The public album API is available at `GET /api/albums` and
+`GET /api/albums/:albumId`. The first route returns all albums. The second
+returns one album with its song references populated, or `404` if no album has
+that ID. Database errors are passed to the server's JSON error handler. These
+routes require the MongoDB connection configured above.
