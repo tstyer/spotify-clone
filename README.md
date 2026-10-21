@@ -42,5 +42,12 @@ that create and read these records will be added later.
 
 `backend/src/models/song.model.js` defines each track's title, artist, cover
 image URL, audio URL, and duration. A song can optionally reference an album by
-its MongoDB ID. Mongoose also records creation and update timestamps. The album
-model and song API will be added in later steps.
+its MongoDB ID. Mongoose also records creation and update timestamps. The song
+API will be added in a later step.
+
+## Backend: album model
+
+`backend/src/models/album.model.js` defines an album's title, artist, cover
+image URL, release year, and list of song IDs. Each song ID references the Song
+model. Mongoose records creation and update timestamps. Album and song routes
+will be added in later steps.
