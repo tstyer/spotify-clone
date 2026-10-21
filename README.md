@@ -42,15 +42,14 @@ that create and read these records will be added later.
 
 `backend/src/models/song.model.js` defines each track's title, artist, cover
 image URL, audio URL, and duration. A song can optionally reference an album by
-its MongoDB ID. Mongoose also records creation and update timestamps. The song
-API will be added in a later step.
+its MongoDB ID. Mongoose also records creation and update timestamps.
 
 ## Backend: album model
 
 `backend/src/models/album.model.js` defines an album's title, artist, cover
 image URL, release year, and list of song IDs. Each song ID references the Song
-model. Mongoose records creation and update timestamps. Song routes and album
-management endpoints will be added in later steps.
+model. Mongoose records creation and update timestamps. Album management
+endpoints will be added in later steps.
 
 ## Backend: message model
 
@@ -66,3 +65,11 @@ The public album API is available at `GET /api/albums` and
 returns one album with its song references populated, or `404` if no album has
 that ID. Database errors are passed to the server's JSON error handler. These
 routes require the MongoDB connection configured above.
+
+## Backend: public song discovery API
+
+The public song routes are `GET /api/songs/featured`,
+`GET /api/songs/made-for-you`, and `GET /api/songs/trending`. They return up to
+six, four, and four randomly sampled songs, respectively. Each response includes
+the song ID, title, artist, image URL, and audio URL. The admin-only list of all
+songs will be added with authentication later.
