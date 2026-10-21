@@ -73,3 +73,13 @@ The public song routes are `GET /api/songs/featured`,
 six, four, and four randomly sampled songs, respectively. Each response includes
 the song ID, title, artist, image URL, and audio URL. The admin-only list of all
 songs will be added with authentication later.
+
+## Backend: authorization middleware
+
+`backend/src/middleware/auth.middleware.js` provides two route guards.
+`protectRoute` requires a Clerk user ID and otherwise returns `401`.
+`requireAdmin` checks the signed-in user's primary Clerk email against
+`ADMIN_EMAIL` and otherwise returns `403`. The guards are not mounted yet;
+Clerk integration and protected routes will be added in later steps. Set
+`CLERK_PUBLISHABLE_KEY`, `CLERK_SECRET_KEY`, and `ADMIN_EMAIL` in `backend/.env`
+before using those routes. Keep the values out of Git.
