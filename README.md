@@ -79,7 +79,16 @@ songs will be added with authentication later.
 `backend/src/middleware/auth.middleware.js` provides two route guards.
 `protectRoute` requires a Clerk user ID and otherwise returns `401`.
 `requireAdmin` checks the signed-in user's primary Clerk email against
-`ADMIN_EMAIL` and otherwise returns `403`. The guards are not mounted yet;
-Clerk integration and protected routes will be added in later steps. Set
+`ADMIN_EMAIL` and otherwise returns `403`. The guards are used by the admin
+access check below. Set
 `CLERK_PUBLISHABLE_KEY`, `CLERK_SECRET_KEY`, and `ADMIN_EMAIL` in `backend/.env`
 before using those routes. Keep the values out of Git.
+
+## Backend: admin access check
+
+The server attaches Clerk identity to requests when both Clerk keys are set in
+`backend/.env`. `GET /api/admin/check` uses the authorization middleware to
+return `{ "admin": true }` for the configured admin user. It returns `401` when
+there is no signed-in user and `403` when the user is not the admin. Without
+Clerk keys, the protected route remains unavailable while public APIs still
+work.
