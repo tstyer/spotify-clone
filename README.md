@@ -55,8 +55,8 @@ endpoints will be added in later steps.
 
 `backend/src/models/message.model.js` stores a sender's Clerk ID, a receiver's
 Clerk ID, and the message text. All three fields are required, and Mongoose
-records creation and update timestamps. Chat routes and real-time delivery will
-be added in later steps.
+records creation and update timestamps. Real-time delivery will be added in a
+later step.
 
 ## Backend: album read API
 
@@ -101,3 +101,11 @@ valid Clerk bearer token and the matching `id`, plus a first or last name and
 an `imageUrl`. Missing profile details return `400`; a mismatched ID returns
 `403`. The frontend reference sends this payload after sign-in. Configure both
 Clerk keys in `backend/.env` before using the callback.
+
+## Backend: user and message read API
+
+Two authenticated routes support the chat UI. `GET /api/users` returns other
+users, excluding the signed-in user. `GET /api/users/messages/:userId` returns
+messages between the signed-in user and the selected user in chronological
+order. Both require a valid Clerk session; configure the backend Clerk keys to
+use them.

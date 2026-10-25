@@ -7,6 +7,7 @@ import albumRoutes from "./routes/album.route.js";
 import songRoutes from "./routes/song.route.js";
 import adminRoutes from "./routes/admin.route.js";
 import authRoutes from "./routes/auth.route.js";
+import userRoutes from "./routes/user.route.js";
 
 dotenv.config();
 
@@ -29,6 +30,7 @@ app.use("/api/albums", albumRoutes);
 app.use("/api/songs", songRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
 
 app.use((err, req, res, next) => {
 	res.status(500).json({ message: process.env.NODE_ENV === "production" ? "Internal server error" : err.message });
