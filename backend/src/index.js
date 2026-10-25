@@ -6,6 +6,7 @@ import { connectDB } from "./lib/db.js";
 import albumRoutes from "./routes/album.route.js";
 import songRoutes from "./routes/song.route.js";
 import adminRoutes from "./routes/admin.route.js";
+import authRoutes from "./routes/auth.route.js";
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ if (process.env.CLERK_PUBLISHABLE_KEY && process.env.CLERK_SECRET_KEY) {
 app.use("/api/albums", albumRoutes);
 app.use("/api/songs", songRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/auth", authRoutes);
 
 app.use((err, req, res, next) => {
 	res.status(500).json({ message: process.env.NODE_ENV === "production" ? "Internal server error" : err.message });

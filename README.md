@@ -92,3 +92,12 @@ return `{ "admin": true }` for the configured admin user. It returns `401` when
 there is no signed-in user and `403` when the user is not the admin. Without
 Clerk keys, the protected route remains unavailable while public APIs still
 work.
+
+## Backend: sign-in callback
+
+`POST /api/auth/callback` saves a new Clerk user to MongoDB and returns
+`{ "success": true }` for a user already saved. The request must include a
+valid Clerk bearer token and the matching `id`, plus a first or last name and
+an `imageUrl`. Missing profile details return `400`; a mismatched ID returns
+`403`. The frontend reference sends this payload after sign-in. Configure both
+Clerk keys in `backend/.env` before using the callback.
