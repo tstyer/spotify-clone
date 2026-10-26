@@ -117,3 +117,10 @@ dashboard. It requires a signed-in Clerk user whose primary email matches
 `ADMIN_EMAIL` in `backend/.env`. Anonymous requests receive `401` and signed-in
 non-admin users receive `403`. The public song discovery routes remain
 available without signing in.
+
+## Backend: admin dashboard statistics
+
+`GET /api/stats` is restricted to the configured admin. It returns the counts
+of songs, albums, and users, plus the number of distinct artists across songs
+and albums. The artist calculation uses MongoDB aggregation. Anonymous
+requests receive `401`; signed-in non-admin users receive `403`.
