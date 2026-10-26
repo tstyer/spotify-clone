@@ -72,7 +72,7 @@ The public song routes are `GET /api/songs/featured`,
 `GET /api/songs/made-for-you`, and `GET /api/songs/trending`. They return up to
 six, four, and four randomly sampled songs, respectively. Each response includes
 the song ID, title, artist, image URL, and audio URL. The admin-only list of all
-songs will be added with authentication later.
+songs is documented below.
 
 ## Backend: authorization middleware
 
@@ -109,3 +109,11 @@ users, excluding the signed-in user. `GET /api/users/messages/:userId` returns
 messages between the signed-in user and the selected user in chronological
 order. Both require a valid Clerk session; configure the backend Clerk keys to
 use them.
+
+## Backend: admin song inventory
+
+`GET /api/songs` returns all songs in newest-first order for the admin
+dashboard. It requires a signed-in Clerk user whose primary email matches
+`ADMIN_EMAIL` in `backend/.env`. Anonymous requests receive `401` and signed-in
+non-admin users receive `403`. The public song discovery routes remain
+available without signing in.
