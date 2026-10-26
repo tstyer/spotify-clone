@@ -124,3 +124,10 @@ available without signing in.
 of songs, albums, and users, plus the number of distinct artists across songs
 and albums. The artist calculation uses MongoDB aggregation. Anonymous
 requests receive `401`; signed-in non-admin users receive `403`.
+
+## Backend: Cloudinary configuration
+
+`backend/src/lib/cloudinary.js` configures the Cloudinary client for album cover
+images and song audio files. Before media uploads are added, put your
+`CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, and `CLOUDINARY_API_SECRET` in the
+ignored `backend/.env` file. No upload endpoint is active yet.
