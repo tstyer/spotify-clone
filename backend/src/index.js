@@ -9,6 +9,7 @@ import adminRoutes from "./routes/admin.route.js";
 import authRoutes from "./routes/auth.route.js";
 import userRoutes from "./routes/user.route.js";
 import statRoutes from "./routes/stat.route.js";
+import { scheduleTempFileCleanup } from "./lib/uploads.js";
 
 dotenv.config();
 
@@ -40,5 +41,6 @@ app.use((err, req, res, next) => {
 
 app.listen(PORT, () => {
 	console.log("Server is running on port " + PORT);
+	scheduleTempFileCleanup();
 	connectDB();
 });
