@@ -58,3 +58,26 @@ export const createSong = async (req, res, next) => {
 		next(error);
 	}
 };
+
+export const deleteSong = async (req, res, next) => {
+	try {
+		const { id } = req.params;
+		if (!mongoose.isValidObjectId(id)) {
+			return res.status(400).json({ message: "Invalid song ID" });
+		}
+
+		const song = await Song.findById(id);
+		if (!song) {
+			return res.status(404).json({ message: "Song not found" });
+		}
+
+		if (song.albumId) {
+			await Album.findByIdAndUpdate(song.albumId, { $pull: { songs: song._id } });
+		}
+		await Song.findByIdAndDelete(id);
+
+		res.status(200).json({ message: "Song deleted successfully" });
+	} catch (error) {
+		next(error);
+	}
+};

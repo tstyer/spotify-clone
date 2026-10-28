@@ -150,3 +150,12 @@ Cloudinary, saves the song in MongoDB, and adds its ID to the chosen album.
 It returns the created song with HTTP `201`. Missing or invalid input returns
 `400`, and an unknown album returns `404`. Set the three Cloudinary values in
 `backend/.env` before creating songs; keep them out of Git.
+
+## Backend: admin song deletion
+
+`DELETE /api/admin/songs/:id` removes a song for a signed-in admin. If the song
+belongs to an album, its ID is also removed from that album's `songs` list.
+The endpoint returns `{ "message": "Song deleted successfully" }` on success,
+`400` for an invalid song ID, or `404` when no song has that ID. As in the course
+reference, this deletes the MongoDB record but does not remove its files from
+Cloudinary.
