@@ -130,7 +130,7 @@ requests receive `401`; signed-in non-admin users receive `403`.
 `backend/src/lib/cloudinary.js` configures the Cloudinary client for album cover
 images and song audio files. Put your `CLOUDINARY_CLOUD_NAME`,
 `CLOUDINARY_API_KEY`, and `CLOUDINARY_API_SECRET` in the ignored `backend/.env`
-file before creating songs.
+file before creating songs or albums.
 
 ## Backend: temporary upload handling
 
@@ -138,8 +138,7 @@ The admin routes now accept multipart file uploads through `express-fileupload`.
 Files are written to the ignored `backend/tmp` directory, with a 10 MB limit per
 file; oversized files receive HTTP `413`. Only authenticated admins reach this
 middleware. An hourly cleanup removes upload temp files older than one hour, so
-an upload in progress is not deleted. Song creation uses these files; album
-creation will follow in a later step.
+an upload in progress is not deleted. Song and album creation use these files.
 
 ## Backend: admin song creation
 
@@ -159,3 +158,12 @@ The endpoint returns `{ "message": "Song deleted successfully" }` on success,
 `400` for an invalid song ID, or `404` when no song has that ID. As in the course
 reference, this deletes the MongoDB record but does not remove its files from
 Cloudinary.
+
+## Backend: admin album creation
+
+`POST /api/admin/albums` creates an album for a signed-in admin. Send multipart
+form data with `title`, `artist`, `releaseYear`, and one `imageFile`. The cover
+image is uploaded to Cloudinary, then the album is saved in MongoDB and returned
+with HTTP `201`. Missing or invalid input returns `400`; the release year must
+be a whole number from 1900 through the current year. Configure the Cloudinary
+values in `backend/.env` before using this endpoint.

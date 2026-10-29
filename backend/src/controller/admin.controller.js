@@ -81,3 +81,36 @@ export const deleteSong = async (req, res, next) => {
 		next(error);
 	}
 };
+
+export const createAlbum = async (req, res, next) => {
+	try {
+		const imageFile = req.files?.imageFile;
+		if (!imageFile || Array.isArray(imageFile) || !imageFile.mimetype?.startsWith("image/")) {
+			return res.status(400).json({ message: "Please upload one album image" });
+		}
+
+		const { title, artist } = req.body;
+		const releaseYear = Number(req.body.releaseYear);
+		if (
+			typeof title !== "string" || !title.trim() ||
+			typeof artist !== "string" || !artist.trim() ||
+			req.body.releaseYear === "" ||
+			!Number.isInteger(releaseYear) || releaseYear < 1900 || releaseYear > new Date().getFullYear()
+		) {
+			return res.status(400).json({ message: "Title, artist, and a valid release year are required" });
+		}
+
+		const imageUrl = await uploadToCloudinary(imageFile);
+		const album = new Album({
+			title: title.trim(),
+			artist: artist.trim(),
+			imageUrl,
+			releaseYear,
+		});
+		await album.save();
+
+		res.status(201).json(album);
+	} catch (error) {
+		next(error);
+	}
+};
