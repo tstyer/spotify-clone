@@ -176,3 +176,13 @@ with every song whose `albumId` points to it. It returns
 album ID, or `404` if the album does not exist. As in the course reference,
 this removes MongoDB records but leaves their image and audio files in
 Cloudinary.
+
+## Backend: authenticated Socket.IO transport
+
+The backend now serves Socket.IO and the Express API from the same HTTP server.
+Socket connections must send a valid Clerk session token in
+`socket.handshake.auth.token`; the server verifies it and stores the Clerk user
+ID on the socket. Missing or invalid tokens are rejected. The reference
+frontend currently sends only a user ID, so its socket setup will need to send
+the token when the frontend is built. Presence, activity, and messaging events
+will be added in later backend steps.
