@@ -167,3 +167,12 @@ image is uploaded to Cloudinary, then the album is saved in MongoDB and returned
 with HTTP `201`. Missing or invalid input returns `400`; the release year must
 be a whole number from 1900 through the current year. Configure the Cloudinary
 values in `backend/.env` before using this endpoint.
+
+## Backend: admin album deletion
+
+`DELETE /api/admin/albums/:id` removes an album for a signed-in admin, along
+with every song whose `albumId` points to it. It returns
+`{ "message": "Album deleted successfully" }` on success, `400` for an invalid
+album ID, or `404` if the album does not exist. As in the course reference,
+this removes MongoDB records but leaves their image and audio files in
+Cloudinary.
