@@ -5,6 +5,7 @@ import { createServer } from "node:http";
 import { clerkMiddleware } from "@clerk/express";
 import { connectDB } from "./lib/db.js";
 import { initializeSocket } from "./lib/socket.js";
+import { serveFrontend } from "./lib/frontend.js";
 import albumRoutes from "./routes/album.route.js";
 import songRoutes from "./routes/song.route.js";
 import adminRoutes from "./routes/admin.route.js";
@@ -38,6 +39,11 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/stats", statRoutes);
+app.use("/api", (req, res) => res.status(404).json({ message: "API route not found" }));
+
+if (process.env.NODE_ENV === "production" && !serveFrontend(app)) {
+	console.warn("Frontend build not found; serving API only");
+}
 
 app.use((err, req, res, next) => {
 	res.status(500).json({ message: process.env.NODE_ENV === "production" ? "Internal server error" : err.message });

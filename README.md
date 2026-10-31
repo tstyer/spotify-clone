@@ -212,3 +212,11 @@ sender, then emits `receive_message` to all online recipient tabs and
 ignored. Empty or oversized messages, self-messages, and unknown recipients
 receive `message_error`. Offline recipients can load saved messages through
 `GET /api/users/messages/:userId` when they return.
+
+## Backend: production frontend serving
+
+When `NODE_ENV=production`, the backend serves the built Vite frontend from
+`frontend/dist` on the same port as the API and Socket.IO. Client-side page
+routes return `index.html`; missing assets return `404`, and unknown API routes
+return a JSON `404`. Build the frontend before starting the production server.
+Until that build exists, the backend continues to serve the API only.
