@@ -55,8 +55,7 @@ endpoints will be added in later steps.
 
 `backend/src/models/message.model.js` stores a sender's Clerk ID, a receiver's
 Clerk ID, and the message text. All three fields are required, and Mongoose
-records creation and update timestamps. Real-time delivery will be added in a
-later step.
+records creation and update timestamps. Real-time delivery is documented below.
 
 ## Backend: album read API
 
@@ -184,8 +183,7 @@ Socket connections must send a valid Clerk session token in
 `socket.handshake.auth.token`; the server verifies it and stores the Clerk user
 ID on the socket. Missing or invalid tokens are rejected. The reference
 frontend currently sends only a user ID, so its socket setup will need to send
-the token when the frontend is built. Messaging events will be added in a later
-backend step.
+the token when the frontend is built.
 
 ## Backend: online user presence
 
@@ -204,3 +202,13 @@ with an `activity` string; the server broadcasts `activity_updated` with the
 verified Clerk user ID and the activity. A client-supplied user ID is ignored.
 When the user's last socket disconnects, their activity is removed and a fresh
 snapshot is broadcast.
+
+## Backend: real-time direct messages
+
+An authenticated socket sends `send_message` with `receiverId` and `content`.
+The server saves the message in MongoDB using the verified Clerk user ID as its
+sender, then emits `receive_message` to all online recipient tabs and
+`message_sent` to all sender tabs. The course client's `senderId` field is
+ignored. Empty or oversized messages, self-messages, and unknown recipients
+receive `message_error`. Offline recipients can load saved messages through
+`GET /api/users/messages/:userId` when they return.

@@ -1,5 +1,7 @@
 import { verifyToken } from "@clerk/express";
 import { Server } from "socket.io";
+import { Message } from "../models/message.model.js";
+import { User } from "../models/user.model.js";
 
 export const initializeSocket = (httpServer, verifySessionToken = verifyToken) => {
 	const io = new Server(httpServer, {
@@ -50,6 +52,34 @@ export const initializeSocket = (httpServer, verifySessionToken = verifyToken) =
 			const currentActivity = activity.trim();
 			userActivities.set(userId, currentActivity);
 			io.emit("activity_updated", { userId, activity: currentActivity });
+		});
+
+		socket.on("send_message", async (data) => {
+			const receiverId = data?.receiverId;
+			const content = data?.content;
+			if (
+				typeof receiverId !== "string" || !receiverId.trim() || receiverId === userId ||
+				typeof content !== "string" || !content.trim() || content.length > 5000
+			) {
+				return socket.emit("message_error", "Invalid message");
+			}
+
+			try {
+				if (!(await User.exists({ clerkId: receiverId }))) {
+					return socket.emit("message_error", "Recipient not found");
+				}
+
+				const message = await Message.create({
+					senderId: userId,
+					receiverId,
+					content: content.trim(),
+				});
+				const receiverSockets = userSockets.get(receiverId);
+				if (receiverSockets) io.to(Array.from(receiverSockets)).emit("receive_message", message);
+				io.to(Array.from(sockets)).emit("message_sent", message);
+			} catch {
+				socket.emit("message_error", "Failed to send message");
+			}
 		});
 
 		socket.on("disconnect", () => {
