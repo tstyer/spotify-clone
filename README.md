@@ -184,8 +184,8 @@ Socket connections must send a valid Clerk session token in
 `socket.handshake.auth.token`; the server verifies it and stores the Clerk user
 ID on the socket. Missing or invalid tokens are rejected. The reference
 frontend currently sends only a user ID, so its socket setup will need to send
-the token when the frontend is built. Activity and messaging events will be
-added in later backend steps.
+the token when the frontend is built. Messaging events will be added in a later
+backend step.
 
 ## Backend: online user presence
 
@@ -195,3 +195,12 @@ comes online. It broadcasts `user_disconnected` after the user's last socket
 disconnects. Multiple browser tabs for one user therefore count as one online
 user. Presence uses the verified Clerk identity from the socket handshake, not
 a user ID supplied in an event.
+
+## Backend: listening activity
+
+Authenticated sockets receive an `activities` snapshot of online users and
+their current activity, starting at `Idle`. The client sends `update_activity`
+with an `activity` string; the server broadcasts `activity_updated` with the
+verified Clerk user ID and the activity. A client-supplied user ID is ignored.
+When the user's last socket disconnects, their activity is removed and a fresh
+snapshot is broadcast.
