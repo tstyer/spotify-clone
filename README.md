@@ -220,3 +220,12 @@ When `NODE_ENV=production`, the backend serves the built Vite frontend from
 routes return `index.html`; missing assets return `404`, and unknown API routes
 return a JSON `404`. Build the frontend before starting the production server.
 Until that build exists, the backend continues to serve the API only.
+
+## Frontend: React and Vite foundation
+
+The frontend now has the course project's Vite, React, TypeScript, Tailwind,
+and lint configuration. Its first page is a minimal placeholder while the
+actual music UI is built in later steps. From `frontend`, run `npm ci` and
+`npm run dev` to open it at `http://localhost:3000`. `npm run build` creates
+`frontend/dist` for the backend's production serving feature. Clerk setup is
+listed in `frontend/.env.sample` and will be wired in a later step.
