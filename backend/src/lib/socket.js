@@ -25,5 +25,25 @@ export const initializeSocket = (httpServer, verifySessionToken = verifyToken) =
 		}
 	});
 
+	const userSockets = new Map();
+	io.on("connection", (socket) => {
+		const userId = socket.data.userId;
+		const sockets = userSockets.get(userId) ?? new Set();
+		const wasOnline = sockets.size > 0;
+		sockets.add(socket.id);
+		userSockets.set(userId, sockets);
+
+		socket.emit("users_online", Array.from(userSockets.keys()));
+		if (!wasOnline) io.emit("user_connected", userId);
+
+		socket.on("disconnect", () => {
+			sockets.delete(socket.id);
+			if (sockets.size === 0) {
+				userSockets.delete(userId);
+				io.emit("user_disconnected", userId);
+			}
+		});
+	});
+
 	return io;
 };
