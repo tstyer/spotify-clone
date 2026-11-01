@@ -229,3 +229,10 @@ actual music UI is built in later steps. From `frontend`, run `npm ci` and
 `npm run dev` to open it at `http://localhost:3000`. `npm run build` creates
 `frontend/dist` for the backend's production serving feature. Clerk setup is
 listed in `frontend/.env.sample` and will be wired in a later step.
+
+## Frontend: shared API client
+
+`frontend/src/lib/axios.ts` exports the Axios client used by the course
+frontend. In development it calls the backend at `http://localhost:5000/api`;
+in a production build it uses the same-origin `/api` path. The authentication
+provider will add the Clerk bearer token in a later step.
