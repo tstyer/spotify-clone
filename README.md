@@ -228,7 +228,7 @@ and lint configuration. Its first page is a minimal placeholder while the
 actual music UI is built in later steps. From `frontend`, run `npm ci` and
 `npm run dev` to open it at `http://localhost:3000`. `npm run build` creates
 `frontend/dist` for the backend's production serving feature. Clerk setup is
-listed in `frontend/.env.sample` and will be wired in a later step.
+listed in `frontend/.env.sample`.
 
 ## Frontend: shared API client
 
@@ -236,3 +236,12 @@ listed in `frontend/.env.sample` and will be wired in a later step.
 frontend. In development it calls the backend at `http://localhost:5000/api`;
 in a production build it uses the same-origin `/api` path. The authentication
 provider will add the Clerk bearer token in a later step.
+
+## Frontend: Clerk provider
+
+`frontend/src/main.tsx` now wraps the app in ClerkProvider. The frontend reads
+`VITE_CLERK_PUBLISHABLE_KEY` from its ignored `frontend/.env` file; the key
+must belong to the same Clerk application as the backend keys. This workspace
+uses the publishable key already configured in `backend/.env`. On another
+machine, copy `frontend/.env.sample` to `frontend/.env` and add the publishable
+key there. The API and socket token wiring will follow in later steps.
