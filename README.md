@@ -245,3 +245,12 @@ must belong to the same Clerk application as the backend keys. This workspace
 uses the publishable key already configured in `backend/.env`. On another
 machine, copy `frontend/.env.sample` to `frontend/.env` and add the publishable
 key there. The API and socket token wiring will follow in later steps.
+
+## Frontend: admin auth store
+
+`frontend/src/stores/useAuthStore.ts` tracks whether the current Clerk user is
+an admin, along with the check's loading and error state. Its
+`checkAdminStatus()` action calls `GET /api/admin/check` through the shared API
+client; `reset()` is available to clear the state on sign-out. The auth
+provider will call these actions after it supplies the Clerk token in a later
+step.
