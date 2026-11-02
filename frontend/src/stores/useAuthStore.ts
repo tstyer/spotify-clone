@@ -10,25 +10,33 @@ interface AuthStore {
 	reset: () => void;
 }
 
+let latestCheck = 0;
+
 export const useAuthStore = create<AuthStore>((set) => ({
 	isAdmin: false,
 	isLoading: false,
 	error: null,
 
 	checkAdminStatus: async () => {
+		const check = ++latestCheck;
 		set({ isLoading: true, error: null });
 		try {
 			const response = await axiosInstance.get<{ admin: boolean }>("/admin/check");
-			set({ isAdmin: response.data.admin === true });
+			if (check === latestCheck) set({ isAdmin: response.data.admin === true });
 		} catch (error) {
 			const message = axios.isAxiosError<{ message?: string }>(error)
 				? error.response?.data?.message
 				: undefined;
-			set({ isAdmin: false, error: message ?? "Unable to check admin access" });
+			if (check === latestCheck) {
+				set({ isAdmin: false, error: message ?? "Unable to check admin access" });
+			}
 		} finally {
-			set({ isLoading: false });
+			if (check === latestCheck) set({ isLoading: false });
 		}
 	},
 
-	reset: () => set({ isAdmin: false, isLoading: false, error: null }),
+	reset: () => {
+		latestCheck++;
+		set({ isAdmin: false, isLoading: false, error: null });
+	},
 }));

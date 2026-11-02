@@ -235,7 +235,7 @@ listed in `frontend/.env.sample`.
 `frontend/src/lib/axios.ts` exports the Axios client used by the course
 frontend. In development it calls the backend at `http://localhost:5000/api`;
 in a production build it uses the same-origin `/api` path. The authentication
-provider will add the Clerk bearer token in a later step.
+provider adds a fresh Clerk bearer token to each request.
 
 ## Frontend: Clerk provider
 
@@ -244,13 +244,20 @@ provider will add the Clerk bearer token in a later step.
 must belong to the same Clerk application as the backend keys. This workspace
 uses the publishable key already configured in `backend/.env`. On another
 machine, copy `frontend/.env.sample` to `frontend/.env` and add the publishable
-key there. The API and socket token wiring will follow in later steps.
+key there. Socket token wiring will follow in a later step.
 
 ## Frontend: admin auth store
 
 `frontend/src/stores/useAuthStore.ts` tracks whether the current Clerk user is
 an admin, along with the check's loading and error state. Its
 `checkAdminStatus()` action calls `GET /api/admin/check` through the shared API
-client; `reset()` is available to clear the state on sign-out. The auth
-provider will call these actions after it supplies the Clerk token in a later
-step.
+client; `reset()` clears the state on sign-out. The auth provider calls these
+actions after it supplies the Clerk token.
+
+## Frontend: auth provider and API token
+
+`frontend/src/providers/AuthProvider.tsx` waits for Clerk to load, adds a fresh
+session token to each API request, checks admin access for signed-in users, and
+clears admin state on sign-out. The app waits for that check before rendering
+its page. An older admin check cannot restore admin state after sign-out.
+Socket authentication will be connected in a later step.
