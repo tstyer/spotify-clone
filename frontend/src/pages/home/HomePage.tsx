@@ -40,7 +40,7 @@ const HomePage = () => {
 	}, [featuredSongs, madeForYouSongs, trendingSongs, isLoading, initializeQueue]);
 
 	return (
-		<main className="min-h-0 flex-1 overflow-y-auto bg-gradient-to-b from-zinc-800 to-zinc-900 text-white">
+		<main className="min-h-0 min-w-0 flex-1 overflow-y-auto bg-gradient-to-b from-zinc-800 to-zinc-900 text-white">
 			<Topbar />
 			<div className="mx-auto max-w-[1800px] p-4 sm:p-6">
 				<h1 className="mb-6 text-2xl font-bold sm:text-3xl">{greeting()}</h1>
