@@ -1,292 +1,95 @@
 # Spotify Clone
 
-This project is being built in small, reviewable steps from the supplied
-`realtime-spotify-clone.zip` reference. Each step is ready to commit before the
-next part is added.
+I'm building this Spotify-inspired app as a practice
+project for combining React, Express, MongoDB, authentication, audio playback,
+and real-time updates.
 
-## Backend: server foundation
+**Status:** Work in progress. The home page and player are taking shape, while
+some of the course project's pages are still being built.
 
-The first step creates the backend Node.js package and a runnable Express server.
-It loads environment variables, accepts JSON requests, and allows credentialed
-requests from the local frontend at `http://localhost:3000`. The API routes and
-other services will be added in later steps.
+## What works so far
 
-To run the backend, copy `backend/.env.sample` to `backend/.env` and set
-`MONGODB_URI` to your MongoDB connection string. Then run:
+- The home page loads featured, Made For You, and Trending songs from the API.
+- Songs can be played from their cards. The player has play/pause, track
+  skipping, seeking, and volume controls.
+- Google sign-in uses Clerk. Signed-in users are saved in MongoDB.
+- The sidebars show albums and, on wide screens, other users' online status and
+  listening activity.
+- The backend has APIs for music, users, messages, and admin management. It uses
+  Socket.IO for presence, listening activity, and direct messages.
 
-```bash
+The album detail page, chat screen, and admin dashboard are still in progress.
+The backend and client-side stores for much of that work already exist.
+
+## Tech stack
+
+| Area | Tools |
+| --- | --- |
+| Frontend | React, TypeScript, Vite, Tailwind CSS, Zustand |
+| Backend | Node.js, Express, Socket.IO |
+| Database | MongoDB with Mongoose |
+| Sign-in | Clerk |
+| Media uploads | Cloudinary |
+
+## Running it locally
+
+You'll need Node.js and npm, a MongoDB database, and a Clerk application. Enable Google sign-in in Clerk if you want to use the sign-in button. Cloudinary credentials are needed when creating songs or albums through the admin API.
+
+### 1. Set up environment files
+
+For a fresh checkout, copy `backend/.env.sample` to `backend/.env` and `frontend/.env.sample` to `frontend/.env`. If you already have `.env` files, keep those instead of replacing them.
+
+Fill in these values:
+
+| File | Variable | Used for |
+| --- | --- | --- |
+| `backend/.env` | `MONGODB_URI` | Connecting to MongoDB |
+| `backend/.env` | `CLERK_PUBLISHABLE_KEY`, `CLERK_SECRET_KEY` | Verifying signed-in users and socket connections |
+| `backend/.env` | `ADMIN_EMAIL` | Choosing the admin account |
+| `backend/.env` | `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` | Uploading cover images and audio |
+| `frontend/.env` | `VITE_CLERK_PUBLISHABLE_KEY` | Clerk sign-in in the browser |
+
+Use the **same Clerk application** for the frontend and backend keys. Keep secret keys and database credentials in the ignored `.env` files, not in Git. The backend uses port `5000` by default, and the frontend expects that port in development.
+
+### 2. Start both servers
+
+In one terminal, from the project root:
+
+```powershell
 cd backend
 npm ci
 npm run dev
 ```
 
-The server listens on port `5000` by default. Set `PORT` in `backend/.env` to use
-another port. `backend/.env.sample` lists the configuration values that later
-backend features will need; keep real credentials in the ignored `.env` file.
+In a second terminal, also from the project root:
 
-## Backend: MongoDB connection
+```powershell
+cd frontend
+npm ci
+npm run dev
+```
 
-The server now connects to MongoDB when it starts. A successful connection logs
-the database host. If the connection fails, the backend exits with code `1`.
-MongoDB must be available and `MONGODB_URI` must be set before starting the
-server. API routes and other services will be added in later steps.
+Open [http://localhost:3000](http://localhost:3000). Leave both terminals running while using the app. The API runs at `http://localhost:5000`.
 
-## Backend: user model
+## Still to do
 
-`backend/src/models/user.model.js` defines the MongoDB user record. Each user
-requires a full name, image URL, and Clerk ID. The Clerk ID has a unique index,
-and Mongoose records creation and update timestamps. Authentication endpoints
-that create and read these records will be added later.
+- Add some music to a fresh database. Until then, the home page and album
+  sidebar show empty states. The seed commands listed in `backend/package.json`
+  do not have scripts yet.
+- Build the album detail page and chat screen. Direct messaging is supported by
+  the backend, but there is no chat page yet.
+- Build the admin dashboard. The upload API already exists and needs Cloudinary
+  credentials to add media.
 
-## Backend: song model
+To check the frontend code, run `npm run build` and `npm run lint` from
+`frontend`. The production build goes into `frontend/dist` and can be served by
+the backend when `NODE_ENV=production`.
 
-`backend/src/models/song.model.js` defines each track's title, artist, cover
-image URL, audio URL, and duration. A song can optionally reference an album by
-its MongoDB ID. Mongoose also records creation and update timestamps.
+## Project structure
 
-## Backend: album model
+- `frontend/` - React pages, player, state stores, and styles.
+- `backend/` - Express API, MongoDB models, uploads, and Socket.IO.
 
-`backend/src/models/album.model.js` defines an album's title, artist, cover
-image URL, release year, and list of song IDs. Each song ID references the Song
-model. Mongoose records creation and update timestamps. Album management
-endpoints will be added in later steps.
-
-## Backend: message model
-
-`backend/src/models/message.model.js` stores a sender's Clerk ID, a receiver's
-Clerk ID, and the message text. All three fields are required, and Mongoose
-records creation and update timestamps. Real-time delivery is documented below.
-
-## Backend: album read API
-
-The public album API is available at `GET /api/albums` and
-`GET /api/albums/:albumId`. The first route returns all albums. The second
-returns one album with its song references populated, or `404` if no album has
-that ID. Database errors are passed to the server's JSON error handler. These
-routes require the MongoDB connection configured above.
-
-## Backend: public song discovery API
-
-The public song routes are `GET /api/songs/featured`,
-`GET /api/songs/made-for-you`, and `GET /api/songs/trending`. They return up to
-six, four, and four randomly sampled songs, respectively. Each response includes
-the song fields needed by the music player, including duration and album ID.
-The admin-only list of all songs is documented below.
-
-## Backend: authorization middleware
-
-`backend/src/middleware/auth.middleware.js` provides two route guards.
-`protectRoute` requires a Clerk user ID and otherwise returns `401`.
-`requireAdmin` checks the signed-in user's primary Clerk email against
-`ADMIN_EMAIL` and otherwise returns `403`. The guards are used by the admin
-access check below. Set
-`CLERK_PUBLISHABLE_KEY`, `CLERK_SECRET_KEY`, and `ADMIN_EMAIL` in `backend/.env`
-before using those routes. Keep the values out of Git.
-
-## Backend: admin access check
-
-The server attaches Clerk identity to requests when both Clerk keys are set in
-`backend/.env`. `GET /api/admin/check` uses the authorization middleware to
-return `{ "admin": true }` for the configured admin user. It returns `401` when
-there is no signed-in user and `403` when the user is not the admin. Without
-Clerk keys, the protected route remains unavailable while public APIs still
-work.
-
-## Backend: sign-in callback
-
-`POST /api/auth/callback` saves a new Clerk user to MongoDB and returns
-`{ "success": true }` for a user already saved. The request must include a
-valid Clerk bearer token and the matching `id`, plus a first or last name and
-an `imageUrl`. Missing profile details return `400`; a mismatched ID returns
-`403`. The frontend reference sends this payload after sign-in. Configure both
-Clerk keys in `backend/.env` before using the callback.
-
-## Backend: user and message read API
-
-Two authenticated routes support the chat UI. `GET /api/users` returns other
-users, excluding the signed-in user. `GET /api/users/messages/:userId` returns
-messages between the signed-in user and the selected user in chronological
-order. Both require a valid Clerk session; configure the backend Clerk keys to
-use them.
-
-## Backend: admin song inventory
-
-`GET /api/songs` returns all songs in newest-first order for the admin
-dashboard. It requires a signed-in Clerk user whose primary email matches
-`ADMIN_EMAIL` in `backend/.env`. Anonymous requests receive `401` and signed-in
-non-admin users receive `403`. The public song discovery routes remain
-available without signing in.
-
-## Backend: admin dashboard statistics
-
-`GET /api/stats` is restricted to the configured admin. It returns the counts
-of songs, albums, and users, plus the number of distinct artists across songs
-and albums. The artist calculation uses MongoDB aggregation. Anonymous
-requests receive `401`; signed-in non-admin users receive `403`.
-
-## Backend: Cloudinary configuration
-
-`backend/src/lib/cloudinary.js` configures the Cloudinary client for album cover
-images and song audio files. Put your `CLOUDINARY_CLOUD_NAME`,
-`CLOUDINARY_API_KEY`, and `CLOUDINARY_API_SECRET` in the ignored `backend/.env`
-file before creating songs or albums.
-
-## Backend: temporary upload handling
-
-The admin routes now accept multipart file uploads through `express-fileupload`.
-Files are written to the ignored `backend/tmp` directory, with a 10 MB limit per
-file; oversized files receive HTTP `413`. Only authenticated admins reach this
-middleware. An hourly cleanup removes upload temp files older than one hour, so
-an upload in progress is not deleted. Song and album creation use these files.
-
-## Backend: admin song creation
-
-`POST /api/admin/songs` creates a song for a signed-in admin. Send multipart form
-data with `title`, `artist`, `duration` in seconds, an `audioFile`, an
-`imageFile`, and optionally an `albumId`. The endpoint uploads both files to
-Cloudinary, saves the song in MongoDB, and adds its ID to the chosen album.
-It returns the created song with HTTP `201`. Missing or invalid input returns
-`400`, and an unknown album returns `404`. Set the three Cloudinary values in
-`backend/.env` before creating songs; keep them out of Git.
-
-## Backend: admin song deletion
-
-`DELETE /api/admin/songs/:id` removes a song for a signed-in admin. If the song
-belongs to an album, its ID is also removed from that album's `songs` list.
-The endpoint returns `{ "message": "Song deleted successfully" }` on success,
-`400` for an invalid song ID, or `404` when no song has that ID. As in the course
-reference, this deletes the MongoDB record but does not remove its files from
-Cloudinary.
-
-## Backend: admin album creation
-
-`POST /api/admin/albums` creates an album for a signed-in admin. Send multipart
-form data with `title`, `artist`, `releaseYear`, and one `imageFile`. The cover
-image is uploaded to Cloudinary, then the album is saved in MongoDB and returned
-with HTTP `201`. Missing or invalid input returns `400`; the release year must
-be a whole number from 1900 through the current year. Configure the Cloudinary
-values in `backend/.env` before using this endpoint.
-
-## Backend: admin album deletion
-
-`DELETE /api/admin/albums/:id` removes an album for a signed-in admin, along
-with every song whose `albumId` points to it. It returns
-`{ "message": "Album deleted successfully" }` on success, `400` for an invalid
-album ID, or `404` if the album does not exist. As in the course reference,
-this removes MongoDB records but leaves their image and audio files in
-Cloudinary.
-
-## Backend: authenticated Socket.IO transport
-
-The backend now serves Socket.IO and the Express API from the same HTTP server.
-Socket connections must send a valid Clerk session token in
-`socket.handshake.auth.token`; the server verifies it and stores the Clerk user
-ID on the socket. Missing or invalid tokens are rejected. The reference
-frontend currently sends only a user ID, so its socket setup will need to send
-the token when the frontend is built.
-
-## Backend: online user presence
-
-After an authenticated socket connects, the server sends it a `users_online`
-list of Clerk user IDs and broadcasts `user_connected` when that user first
-comes online. It broadcasts `user_disconnected` after the user's last socket
-disconnects. Multiple browser tabs for one user therefore count as one online
-user. Presence uses the verified Clerk identity from the socket handshake, not
-a user ID supplied in an event.
-
-## Backend: listening activity
-
-Authenticated sockets receive an `activities` snapshot of online users and
-their current activity, starting at `Idle`. The client sends `update_activity`
-with an `activity` string; the server broadcasts `activity_updated` with the
-verified Clerk user ID and the activity. A client-supplied user ID is ignored.
-When the user's last socket disconnects, their activity is removed and a fresh
-snapshot is broadcast.
-
-## Backend: real-time direct messages
-
-An authenticated socket sends `send_message` with `receiverId` and `content`.
-The server saves the message in MongoDB using the verified Clerk user ID as its
-sender, then emits `receive_message` to all online recipient tabs and
-`message_sent` to all sender tabs. The course client's `senderId` field is
-ignored. Empty or oversized messages, self-messages, and unknown recipients
-receive `message_error`. Offline recipients can load saved messages through
-`GET /api/users/messages/:userId` when they return.
-
-## Backend: production frontend serving
-
-When `NODE_ENV=production`, the backend serves the built Vite frontend from
-`frontend/dist` on the same port as the API and Socket.IO. Client-side page
-routes return `index.html`; missing assets return `404`, and unknown API routes
-return a JSON `404`. Build the frontend before starting the production server.
-Until that build exists, the backend continues to serve the API only.
-
-## Frontend: React and Vite foundation
-
-The frontend now has the course project's Vite, React, TypeScript, Tailwind,
-and lint configuration. Its first page is a minimal placeholder while the
-actual music UI is built in later steps. From `frontend`, run `npm ci` and
-`npm run dev` to open it at `http://localhost:3000`. `npm run build` creates
-`frontend/dist` for the backend's production serving feature. Clerk setup is
-listed in `frontend/.env.sample`.
-
-## Frontend: shared API client
-
-`frontend/src/lib/axios.ts` exports the Axios client used by the course
-frontend. In development it calls the backend at `http://localhost:5000/api`;
-in a production build it uses the same-origin `/api` path. The authentication
-provider adds a fresh Clerk bearer token to each request.
-
-## Frontend: Clerk provider
-
-`frontend/src/main.tsx` now wraps the app in ClerkProvider. The frontend reads
-`VITE_CLERK_PUBLISHABLE_KEY` from its ignored `frontend/.env` file; the key
-must belong to the same Clerk application as the backend keys. This workspace
-uses the publishable key already configured in `backend/.env`. On another
-machine, copy `frontend/.env.sample` to `frontend/.env` and add the publishable
-key there. Socket token wiring will follow in a later step.
-
-## Frontend: admin auth store
-
-`frontend/src/stores/useAuthStore.ts` tracks whether the current Clerk user is
-an admin, along with the check's loading and error state. Its
-`checkAdminStatus()` action calls `GET /api/admin/check` through the shared API
-client; `reset()` clears the state on sign-out. The auth provider calls these
-actions after it supplies the Clerk token.
-
-## Frontend: auth provider and API token
-
-`frontend/src/providers/AuthProvider.tsx` waits for Clerk to load, adds a fresh
-session token to each API request, checks admin access for signed-in users, and
-clears admin state on sign-out. The app waits for that check before rendering
-its page. An older admin check cannot restore admin state after sign-out.
-Socket authentication will be connected in a later step.
-
-## Frontend: sign-in callback
-
-The frontend now has the course's `/sso-callback` and `/auth-callback` routes.
-After Clerk completes an OAuth sign-in, the callback page sends the signed-in
-user's ID, name, and image URL to `POST /api/auth/callback`. The auth provider
-adds the Clerk bearer token. A successful save returns to the home route; a
-failed save stays on the callback page with a retry button so the user can
-finish creating their chat profile. The home page is still a placeholder.
-
-## Frontend: Google sign-in button
-
-The home placeholder now shows a **Continue with Google** button when signed
-out. It starts Clerk's Google OAuth flow and returns through `/sso-callback`
-and `/auth-callback`, where the profile is saved to MongoDB. Signed-in users
-see their Clerk account control. The Google icon is copied from the supplied
-reference project. To try this flow, run both the backend and frontend dev
-servers, and enable Google sign-in for the same Clerk application used by both.
-
-## Frontend: music data store
-
-`frontend/src/stores/useMusicStore.ts` loads albums, individual albums with
-their songs, featured and recommended song lists, and admin songs and stats.
-It also calls the admin delete routes, updates the in-memory lists, and
-refreshes stats after a successful deletion. Shared music types describe the
-API responses. The public song API now includes duration for playback and album
-ID for keeping song lists in sync after album deletion. Loading remains true
-while concurrent requests are pending, and failed requests show an error in the store. Admin
-deletions also show a toast. Pages will use this store in later steps.
+This is a learning project based on the Udemy course's Spotify clone. Spotify's
+name and branding belong to their respective owners; this project is not
+affiliated with Spotify.
