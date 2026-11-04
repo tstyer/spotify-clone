@@ -13,7 +13,7 @@ export const getFeaturedSongs = async (req, res, next) => {
 	try {
 		const songs = await Song.aggregate([
 			{ $sample: { size: 6 } },
-			{ $project: { _id: 1, title: 1, artist: 1, imageUrl: 1, audioUrl: 1 } },
+			{ $project: { _id: 1, title: 1, artist: 1, albumId: 1, imageUrl: 1, audioUrl: 1, duration: 1, createdAt: 1, updatedAt: 1 } },
 		]);
 		res.json(songs);
 	} catch (error) {
@@ -25,7 +25,7 @@ export const getMadeForYouSongs = async (req, res, next) => {
 	try {
 		const songs = await Song.aggregate([
 			{ $sample: { size: 4 } },
-			{ $project: { _id: 1, title: 1, artist: 1, imageUrl: 1, audioUrl: 1 } },
+			{ $project: { _id: 1, title: 1, artist: 1, albumId: 1, imageUrl: 1, audioUrl: 1, duration: 1, createdAt: 1, updatedAt: 1 } },
 		]);
 		res.json(songs);
 	} catch (error) {
@@ -37,7 +37,7 @@ export const getTrendingSongs = async (req, res, next) => {
 	try {
 		const songs = await Song.aggregate([
 			{ $sample: { size: 4 } },
-			{ $project: { _id: 1, title: 1, artist: 1, imageUrl: 1, audioUrl: 1 } },
+			{ $project: { _id: 1, title: 1, artist: 1, albumId: 1, imageUrl: 1, audioUrl: 1, duration: 1, createdAt: 1, updatedAt: 1 } },
 		]);
 		res.json(songs);
 	} catch (error) {

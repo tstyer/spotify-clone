@@ -70,8 +70,8 @@ routes require the MongoDB connection configured above.
 The public song routes are `GET /api/songs/featured`,
 `GET /api/songs/made-for-you`, and `GET /api/songs/trending`. They return up to
 six, four, and four randomly sampled songs, respectively. Each response includes
-the song ID, title, artist, image URL, and audio URL. The admin-only list of all
-songs is documented below.
+the song fields needed by the music player, including duration and album ID.
+The admin-only list of all songs is documented below.
 
 ## Backend: authorization middleware
 
@@ -279,3 +279,14 @@ and `/auth-callback`, where the profile is saved to MongoDB. Signed-in users
 see their Clerk account control. The Google icon is copied from the supplied
 reference project. To try this flow, run both the backend and frontend dev
 servers, and enable Google sign-in for the same Clerk application used by both.
+
+## Frontend: music data store
+
+`frontend/src/stores/useMusicStore.ts` loads albums, individual albums with
+their songs, featured and recommended song lists, and admin songs and stats.
+It also calls the admin delete routes, updates the in-memory lists, and
+refreshes stats after a successful deletion. Shared music types describe the
+API responses. The public song API now includes duration for playback and album
+ID for keeping song lists in sync after album deletion. Loading remains true
+while concurrent requests are pending, and failed requests show an error in the store. Admin
+deletions also show a toast. Pages will use this store in later steps.
