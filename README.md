@@ -269,5 +269,13 @@ After Clerk completes an OAuth sign-in, the callback page sends the signed-in
 user's ID, name, and image URL to `POST /api/auth/callback`. The auth provider
 adds the Clerk bearer token. A successful save returns to the home route; a
 failed save stays on the callback page with a retry button so the user can
-finish creating their chat profile. The home page is still a placeholder;
-the sign-in button will be added in a later step.
+finish creating their chat profile. The home page is still a placeholder.
+
+## Frontend: Google sign-in button
+
+The home placeholder now shows a **Continue with Google** button when signed
+out. It starts Clerk's Google OAuth flow and returns through `/sso-callback`
+and `/auth-callback`, where the profile is saved to MongoDB. Signed-in users
+see their Clerk account control. The Google icon is copied from the supplied
+reference project. To try this flow, run both the backend and frontend dev
+servers, and enable Google sign-in for the same Clerk application used by both.
