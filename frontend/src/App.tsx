@@ -2,6 +2,7 @@ import { AuthenticateWithRedirectCallback, SignedIn, SignedOut, UserButton } fro
 import { Toaster } from "react-hot-toast";
 import { Route, Routes } from "react-router-dom";
 import SignInOAuthButtons from "@/components/SignInOAuthButtons";
+import AudioPlayer from "@/layout/components/AudioPlayer";
 import AuthCallbackPage from "@/pages/auth-callback/AuthCallbackPage";
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
 					path="/"
 					element={
 						<main className="flex min-h-screen flex-col items-center justify-center gap-8 bg-zinc-950 px-4 text-zinc-50">
+							<AudioPlayer />
 							<h1 className="text-3xl font-bold">Spotify Clone</h1>
 							<SignedOut>
 								<SignInOAuthButtons />
