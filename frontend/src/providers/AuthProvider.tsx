@@ -3,11 +3,14 @@ import { Loader } from "lucide-react";
 import { useEffect, useState, type PropsWithChildren } from "react";
 import { axiosInstance } from "@/lib/axios";
 import { useAuthStore } from "@/stores/useAuthStore";
+import { useChatStore } from "@/stores/useChatStore";
 
 const AuthProvider = ({ children }: PropsWithChildren) => {
 	const { isLoaded, userId, getToken } = useAuth();
 	const checkAdminStatus = useAuthStore((state) => state.checkAdminStatus);
 	const reset = useAuthStore((state) => state.reset);
+	const initSocket = useChatStore((state) => state.initSocket);
+	const disconnectSocket = useChatStore((state) => state.disconnectSocket);
 	const [readyFor, setReadyFor] = useState<string | null | undefined>(undefined);
 
 	useEffect(() => {
@@ -39,6 +42,14 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 			reset();
 		};
 	}, [isLoaded, userId, checkAdminStatus, reset]);
+
+	useEffect(() => {
+		if (!isLoaded) return;
+		if (userId) void initSocket(userId, getToken);
+		else disconnectSocket();
+
+		return () => disconnectSocket();
+	}, [isLoaded, userId, getToken, initSocket, disconnectSocket]);
 
 	if (!isLoaded || readyFor !== (userId ?? null)) {
 		return (
