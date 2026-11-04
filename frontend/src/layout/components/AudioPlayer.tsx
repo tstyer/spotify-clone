@@ -47,7 +47,7 @@ const AudioPlayer = () => {
 		if (player.isPlaying) player.togglePlay();
 	};
 
-	return <audio ref={audioRef} onEnded={playNext} onError={handleError} preload="metadata" />;
+	return <audio ref={audioRef} data-player-audio="true" onEnded={playNext} onError={handleError} preload="metadata" />;
 };
 
 export default AudioPlayer;
