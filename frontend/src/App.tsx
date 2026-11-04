@@ -2,6 +2,7 @@ import { AuthenticateWithRedirectCallback } from "@clerk/clerk-react";
 import { Toaster } from "react-hot-toast";
 import { Route, Routes } from "react-router-dom";
 import AudioPlayer from "@/layout/components/AudioPlayer";
+import FriendsActivity from "@/layout/components/FriendsActivity";
 import LeftSidebar from "@/layout/components/LeftSidebar";
 import { PlaybackControls } from "@/layout/components/PlaybackControls";
 import AuthCallbackPage from "@/pages/auth-callback/AuthCallbackPage";
@@ -26,6 +27,9 @@ function App() {
 									<LeftSidebar />
 								</aside>
 								<HomePage />
+								<aside className="hidden w-64 shrink-0 xl:block">
+									<FriendsActivity />
+								</aside>
 							</div>
 							<PlaybackControls />
 						</div>
