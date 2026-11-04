@@ -261,3 +261,13 @@ session token to each API request, checks admin access for signed-in users, and
 clears admin state on sign-out. The app waits for that check before rendering
 its page. An older admin check cannot restore admin state after sign-out.
 Socket authentication will be connected in a later step.
+
+## Frontend: sign-in callback
+
+The frontend now has the course's `/sso-callback` and `/auth-callback` routes.
+After Clerk completes an OAuth sign-in, the callback page sends the signed-in
+user's ID, name, and image URL to `POST /api/auth/callback`. The auth provider
+adds the Clerk bearer token. A successful save returns to the home route; a
+failed save stays on the callback page with a retry button so the user can
+finish creating their chat profile. The home page is still a placeholder;
+the sign-in button will be added in a later step.
