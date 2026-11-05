@@ -1,4 +1,5 @@
 import { SignedIn, SignedOut, UserButton } from "@clerk/clerk-react";
+import { MessageCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import SignInOAuthButtons from "./SignInOAuthButtons";
 
@@ -13,6 +14,9 @@ const Topbar = () => (
 				<SignInOAuthButtons />
 			</SignedOut>
 			<SignedIn>
+				<Link to="/chat" aria-label="Messages" className="mr-4 rounded-full p-2 text-zinc-300 hover:bg-zinc-800 hover:text-white md:hidden">
+					<MessageCircle className="size-5" aria-hidden="true" />
+				</Link>
 				<UserButton />
 			</SignedIn>
 		</div>

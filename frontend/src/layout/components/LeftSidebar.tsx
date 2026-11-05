@@ -1,4 +1,5 @@
-import { Home, Library } from "lucide-react";
+import { SignedIn } from "@clerk/clerk-react";
+import { Home, Library, MessageCircle } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { NavLink } from "react-router-dom";
 import { useMusicStore } from "@/stores/useMusicStore";
@@ -28,6 +29,15 @@ const LeftSidebar = () => {
 					<Home className="size-5" aria-hidden="true" />
 					Home
 				</NavLink>
+				<SignedIn>
+					<NavLink
+						to="/chat"
+						className={({ isActive }) => `flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium hover:bg-zinc-800 ${isActive ? "bg-zinc-800 text-white" : "text-zinc-300"}`}
+					>
+						<MessageCircle className="size-5" aria-hidden="true" />
+						Messages
+					</NavLink>
+				</SignedIn>
 			</nav>
 
 			<section aria-labelledby="album-library-heading" className="flex min-h-0 flex-1 flex-col rounded-lg bg-zinc-900 p-4">
