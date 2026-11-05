@@ -14,7 +14,7 @@ some of the course project's pages are still being built.
   skipping, seeking, and volume controls.
 - Google sign-in uses Clerk. Signed-in users are saved in MongoDB.
 - The sidebars show albums and, on wide screens, other users' online status and
-  listening activity.
+  listening activity. They can be resized on desktop.
 - The backend has APIs for music, users, messages, and admin management. It uses
   Socket.IO for presence, listening activity, and direct messages.
 
