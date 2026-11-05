@@ -13,12 +13,13 @@ some of the course project's pages are still being built.
 - Songs can be played from their cards. The player has play/pause, track
   skipping, seeking, and volume controls.
 - Google sign-in uses Clerk. Signed-in users are saved in MongoDB.
-- The sidebars show albums and, on wide screens, other users' online status and
-  listening activity. They can be resized on desktop.
+- The album sidebar opens track lists where I can play a whole album or choose
+  a song. On wide screens, another sidebar shows who is online and what they're
+  listening to. Both sidebars can be resized on desktop.
 - The backend has APIs for music, users, messages, and admin management. It uses
   Socket.IO for presence, listening activity, and direct messages.
 
-The album detail page, chat screen, and admin dashboard are still in progress.
+The chat screen and admin dashboard are still in progress.
 The backend and client-side stores for much of that work already exist.
 
 ## Tech stack
@@ -76,8 +77,8 @@ Open [http://localhost:3000](http://localhost:3000). Leave both terminals runnin
 - Add some music to a fresh database. Until then, the home page and album
   sidebar show empty states. The seed commands listed in `backend/package.json`
   do not have scripts yet.
-- Build the album detail page and chat screen. Direct messaging is supported by
-  the backend, but there is no chat page yet.
+- Build the chat screen. Direct messaging is supported by the backend, but
+  there is no chat page yet.
 - Build the admin dashboard. The upload API already exists and needs Cloudinary
   credentials to add media.
 

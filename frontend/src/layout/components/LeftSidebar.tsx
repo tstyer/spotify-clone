@@ -52,13 +52,17 @@ const LeftSidebar = () => {
 						<p className="px-3 text-sm text-zinc-400">No albums yet.</p>
 					) : (
 						albums.map((album) => (
-							<div key={album._id} className="flex items-center gap-3 rounded-md p-2">
+							<NavLink
+								key={album._id}
+								to={`/albums/${album._id}`}
+								className={({ isActive }) => `flex items-center gap-3 rounded-md p-2 hover:bg-zinc-800 ${isActive ? "bg-zinc-800" : ""}`}
+							>
 								<img src={album.imageUrl} alt="" className="size-12 shrink-0 rounded-md object-cover" />
 								<div className="min-w-0">
 									<p className="truncate font-medium">{album.title}</p>
 									<p className="truncate text-sm text-zinc-400">Album · {album.artist}</p>
 								</div>
-							</div>
+							</NavLink>
 						))
 					)}
 				</div>
