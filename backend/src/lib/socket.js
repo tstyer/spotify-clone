@@ -54,19 +54,23 @@ export const initializeSocket = (httpServer, verifySessionToken = verifyToken) =
 			io.emit("activity_updated", { userId, activity: currentActivity });
 		});
 
-		socket.on("send_message", async (data) => {
+		socket.on("send_message", async (data, acknowledge) => {
+			const rejectMessage = (error) => {
+				socket.emit("message_error", error);
+				if (typeof acknowledge === "function") acknowledge({ ok: false, error });
+			};
 			const receiverId = data?.receiverId;
 			const content = data?.content;
 			if (
 				typeof receiverId !== "string" || !receiverId.trim() || receiverId === userId ||
 				typeof content !== "string" || !content.trim() || content.length > 5000
 			) {
-				return socket.emit("message_error", "Invalid message");
+				return rejectMessage("Invalid message");
 			}
 
 			try {
 				if (!(await User.exists({ clerkId: receiverId }))) {
-					return socket.emit("message_error", "Recipient not found");
+					return rejectMessage("Recipient not found");
 				}
 
 				const message = await Message.create({
@@ -77,8 +81,9 @@ export const initializeSocket = (httpServer, verifySessionToken = verifyToken) =
 				const receiverSockets = userSockets.get(receiverId);
 				if (receiverSockets) io.to(Array.from(receiverSockets)).emit("receive_message", message);
 				io.to(Array.from(sockets)).emit("message_sent", message);
+				if (typeof acknowledge === "function") acknowledge({ ok: true });
 			} catch {
-				socket.emit("message_error", "Failed to send message");
+				rejectMessage("Failed to send message");
 			}
 		});
 

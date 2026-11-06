@@ -21,7 +21,7 @@ interface ChatStore {
 	setSelectedUser: (user: User | null) => void;
 	initSocket: (userId: string, getToken: GetToken) => Promise<void>;
 	disconnectSocket: () => void;
-	sendMessage: (receiverId: string, content: string) => boolean;
+	sendMessage: (receiverId: string, content: string) => Promise<boolean>;
 	updateActivity: (activity: string) => void;
 }
 
@@ -149,14 +149,22 @@ export const useChatStore = create<ChatStore>((set, get) => {
 			});
 		},
 
-		sendMessage: (receiverId, content) => {
+		sendMessage: async (receiverId, content) => {
 			const trimmed = content.trim();
 			if (!socket.connected || !trimmed || trimmed.length > 5000 || receiverId === activeUserId) {
 				set({ error: "Unable to send message" });
 				return false;
 			}
-			socket.emit("send_message", { receiverId, content: trimmed });
-			return true;
+			set({ error: null });
+			try {
+				const result = await socket.timeout(10000).emitWithAck("send_message", { receiverId, content: trimmed }) as { ok?: boolean; error?: string };
+				if (result?.ok) return true;
+				set({ error: result?.error ?? "Unable to send message" });
+				return false;
+			} catch {
+				set({ error: "Message was not confirmed. Check your connection and try again." });
+				return false;
+			}
 		},
 
 		updateActivity: (activity) => {

@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import Topbar from "@/components/Topbar";
 import { useChatStore } from "@/stores/useChatStore";
 import UsersList from "./components/UsersList";
+import MessageInput from "./components/MessageInput";
 
 const formatTime = (date: string) => new Date(date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
@@ -75,6 +76,7 @@ const ChatPage = () => {
 									})}
 									<div ref={bottomRef} />
 								</div>
+								<MessageInput key={selectedUser.clerkId} />
 							</>
 						) : (
 							<div className="flex flex-1 flex-col items-center justify-center gap-3 p-4 text-center text-zinc-400">
