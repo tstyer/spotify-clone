@@ -1,9 +1,10 @@
 import { UserButton } from "@clerk/clerk-react";
 import { Disc3, ListMusic, Users, Mic2 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useMusicStore } from "@/stores/useMusicStore";
+import SongsLibrary from "./components/SongsLibrary";
 
 const AdminPage = () => {
 	const isAdmin = useAuthStore((state) => state.isAdmin);
@@ -11,23 +12,17 @@ const AdminPage = () => {
 	const authLoading = useAuthStore((state) => state.isLoading);
 	const checkAdminStatus = useAuthStore((state) => state.checkAdminStatus);
 	const stats = useMusicStore((state) => state.stats);
-	const statsLoading = useMusicStore((state) => state.isLoading);
-	const statsError = useMusicStore((state) => state.error);
+	const statsStatus = useMusicStore((state) => state.statsStatus);
+	const statsError = useMusicStore((state) => state.statsError);
 	const fetchStats = useMusicStore((state) => state.fetchStats);
 	const requestedStats = useRef(false);
-	const [statsLoaded, setStatsLoaded] = useState(false);
 	const accessCheckFailed = Boolean(authError && !authError.startsWith("Unauthorized"));
 
 	useEffect(() => {
 		if (!isAdmin || requestedStats.current) return;
 		requestedStats.current = true;
-		void fetchStats().then(() => setStatsLoaded(true));
+		void fetchStats();
 	}, [isAdmin, fetchStats]);
-
-	const retryStats = () => {
-		setStatsLoaded(false);
-		void fetchStats().then(() => setStatsLoaded(true));
-	};
 
 	const cards = [
 		{ label: "Total Songs", value: stats.totalSongs, icon: ListMusic, color: "text-emerald-400 bg-emerald-500/10" },
@@ -64,14 +59,15 @@ const AdminPage = () => {
 						</div>
 					</section>
 				) : (
+					<>
 					<section aria-label="Catalog overview">
 						<h2 className="mb-4 text-xl font-semibold">Overview</h2>
-						{statsLoading || !statsLoaded ? (
+						{statsStatus === "idle" || statsStatus === "loading" ? (
 							<p role="status" className="text-zinc-300">Loading catalog totals...</p>
 						) : statsError ? (
 							<div role="alert" className="rounded-lg border border-zinc-700 bg-zinc-800/60 p-5">
 								<p>{statsError}</p>
-								<button type="button" onClick={retryStats} className="mt-3 text-sm text-green-400 hover:underline">Try again</button>
+								<button type="button" onClick={() => void fetchStats()} className="mt-3 text-sm text-green-400 hover:underline">Try again</button>
 							</div>
 						) : (
 							<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -84,6 +80,8 @@ const AdminPage = () => {
 							</div>
 						)}
 					</section>
+					<SongsLibrary />
+					</>
 				)}
 			</div>
 		</main>

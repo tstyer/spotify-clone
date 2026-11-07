@@ -21,7 +21,7 @@ still building the music management tools.
 - Signed-in users can open Messages, choose another listener, read their
   conversation history, and send messages in real time.
 - The admin account can open Music Manager to see totals for songs, albums,
-  artists, and users.
+  artists, and users, and browse the songs in the catalog.
 
 The catalog editing part of the admin dashboard is still in progress.
 The backend and client-side stores for much of that work already exist.
@@ -81,8 +81,8 @@ Open [http://localhost:3000](http://localhost:3000). Leave both terminals runnin
 - Add some music to a fresh database. Until then, the home page and album
   sidebar show empty states. The seed commands listed in `backend/package.json`
   do not have scripts yet.
-- Add song and album management to the admin dashboard. The upload API already
-  exists and needs Cloudinary credentials to add media.
+- Add controls for creating and deleting songs and managing albums. The upload
+  API already exists and needs Cloudinary credentials to add media.
 
 To check the frontend code, run `npm run build` and `npm run lint` from
 `frontend`. The production build goes into `frontend/dist` and can be served by

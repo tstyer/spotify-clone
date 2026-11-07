@@ -9,6 +9,10 @@ interface MusicStore {
 	albums: Album[];
 	isLoading: boolean;
 	error: string | null;
+	songsStatus: "idle" | "loading" | "success" | "error";
+	songsError: string | null;
+	statsStatus: "idle" | "loading" | "success" | "error";
+	statsError: string | null;
 	currentAlbum: AlbumWithSongs | null;
 	featuredSongs: Song[];
 	madeForYouSongs: Song[];
@@ -49,6 +53,10 @@ export const useMusicStore = create<MusicStore>((set, get) => {
 		albums: [],
 		isLoading: false,
 		error: null,
+		songsStatus: "idle",
+		songsError: null,
+		statsStatus: "idle",
+		statsError: null,
 		currentAlbum: null,
 		featuredSongs: [],
 		madeForYouSongs: [],
@@ -119,11 +127,13 @@ export const useMusicStore = create<MusicStore>((set, get) => {
 
 		fetchStats: async () => {
 			start();
+			set({ statsStatus: "loading", statsError: null });
 			try {
 				const response = await axiosInstance.get<Stats>("/stats");
-				set({ stats: response.data });
+				set({ stats: response.data, statsStatus: "success" });
 			} catch (error) {
-				set({ error: errorMessage(error, "Unable to load statistics") });
+				const message = errorMessage(error, "Unable to load statistics");
+				set({ error: message, statsError: message, statsStatus: "error" });
 			} finally {
 				finish();
 			}
@@ -131,11 +141,13 @@ export const useMusicStore = create<MusicStore>((set, get) => {
 
 		fetchSongs: async () => {
 			start();
+			set({ songsStatus: "loading", songsError: null });
 			try {
 				const response = await axiosInstance.get<Song[]>("/songs");
-				set({ songs: response.data });
+				set({ songs: response.data, songsStatus: "success" });
 			} catch (error) {
-				set({ error: errorMessage(error, "Unable to load songs") });
+				const message = errorMessage(error, "Unable to load songs");
+				set({ error: message, songsError: message, songsStatus: "error" });
 			} finally {
 				finish();
 			}
