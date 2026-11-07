@@ -4,8 +4,8 @@ I'm building this Spotify-inspired app as a practice
 project for combining React, Express, MongoDB, authentication, audio playback,
 and real-time updates.
 
-**Status:** Work in progress. The home page and player are taking shape, while
-some of the course project's pages are still being built.
+**Status:** Work in progress. Playback, album pages, and chat are in place. I'm
+still building the music management tools.
 
 ## What works so far
 
@@ -20,8 +20,10 @@ some of the course project's pages are still being built.
   Socket.IO for presence, listening activity, and direct messages.
 - Signed-in users can open Messages, choose another listener, read their
   conversation history, and send messages in real time.
+- The admin account can open Music Manager to see totals for songs, albums,
+  artists, and users.
 
-The admin dashboard is still in progress.
+The catalog editing part of the admin dashboard is still in progress.
 The backend and client-side stores for much of that work already exist.
 
 ## Tech stack
@@ -79,8 +81,8 @@ Open [http://localhost:3000](http://localhost:3000). Leave both terminals runnin
 - Add some music to a fresh database. Until then, the home page and album
   sidebar show empty states. The seed commands listed in `backend/package.json`
   do not have scripts yet.
-- Build the admin dashboard. The upload API already exists and needs Cloudinary
-  credentials to add media.
+- Add song and album management to the admin dashboard. The upload API already
+  exists and needs Cloudinary credentials to add media.
 
 To check the frontend code, run `npm run build` and `npm run lint` from
 `frontend`. The production build goes into `frontend/dist` and can be served by
