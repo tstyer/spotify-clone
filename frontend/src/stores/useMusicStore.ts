@@ -11,6 +11,8 @@ interface MusicStore {
 	error: string | null;
 	songsStatus: "idle" | "loading" | "success" | "error";
 	songsError: string | null;
+	albumsStatus: "idle" | "loading" | "success" | "error";
+	albumsError: string | null;
 	statsStatus: "idle" | "loading" | "success" | "error";
 	statsError: string | null;
 	currentAlbum: AlbumWithSongs | null;
@@ -55,6 +57,8 @@ export const useMusicStore = create<MusicStore>((set, get) => {
 		error: null,
 		songsStatus: "idle",
 		songsError: null,
+		albumsStatus: "idle",
+		albumsError: null,
 		statsStatus: "idle",
 		statsError: null,
 		currentAlbum: null,
@@ -65,11 +69,13 @@ export const useMusicStore = create<MusicStore>((set, get) => {
 
 		fetchAlbums: async () => {
 			start();
+			set({ albumsStatus: "loading", albumsError: null });
 			try {
 				const response = await axiosInstance.get<Album[]>("/albums");
-				set({ albums: response.data });
+				set({ albums: response.data, albumsStatus: "success" });
 			} catch (error) {
-				set({ error: errorMessage(error, "Unable to load albums") });
+				const message = errorMessage(error, "Unable to load albums");
+				set({ error: message, albumsError: message, albumsStatus: "error" });
 			} finally {
 				finish();
 			}

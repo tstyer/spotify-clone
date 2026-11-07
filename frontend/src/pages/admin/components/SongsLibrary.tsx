@@ -1,5 +1,4 @@
 import { ListMusic } from "lucide-react";
-import { useEffect, useRef } from "react";
 import { useMusicStore } from "@/stores/useMusicStore";
 
 const formatDuration = (seconds: number) => {
@@ -8,20 +7,13 @@ const formatDuration = (seconds: number) => {
 };
 
 const SongsLibrary = () => {
-	const requestedSongs = useRef(false);
 	const songs = useMusicStore((state) => state.songs);
 	const status = useMusicStore((state) => state.songsStatus);
 	const error = useMusicStore((state) => state.songsError);
 	const fetchSongs = useMusicStore((state) => state.fetchSongs);
 
-	useEffect(() => {
-		if (requestedSongs.current) return;
-		requestedSongs.current = true;
-		void fetchSongs();
-	}, [fetchSongs]);
-
 	return (
-		<section aria-labelledby="songs-library-heading" className="mt-8 rounded-lg border border-zinc-700/50 bg-zinc-800/50 p-4 sm:p-6">
+		<section aria-labelledby="songs-library-heading" className="rounded-lg border border-zinc-700/50 bg-zinc-800/50 p-4 sm:p-6">
 			<div className="mb-5 flex items-center gap-2">
 				<ListMusic className="size-5 text-emerald-400" aria-hidden="true" />
 				<div>

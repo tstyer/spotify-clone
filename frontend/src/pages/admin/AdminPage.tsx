@@ -1,10 +1,11 @@
 import { UserButton } from "@clerk/clerk-react";
 import { Disc3, ListMusic, Users, Mic2 } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useMusicStore } from "@/stores/useMusicStore";
 import SongsLibrary from "./components/SongsLibrary";
+import AlbumsLibrary from "./components/AlbumsLibrary";
 
 const AdminPage = () => {
 	const isAdmin = useAuthStore((state) => state.isAdmin);
@@ -15,14 +16,19 @@ const AdminPage = () => {
 	const statsStatus = useMusicStore((state) => state.statsStatus);
 	const statsError = useMusicStore((state) => state.statsError);
 	const fetchStats = useMusicStore((state) => state.fetchStats);
-	const requestedStats = useRef(false);
+	const fetchSongs = useMusicStore((state) => state.fetchSongs);
+	const fetchAlbums = useMusicStore((state) => state.fetchAlbums);
+	const requestedCatalog = useRef(false);
+	const [activeCatalog, setActiveCatalog] = useState<"songs" | "albums">("songs");
 	const accessCheckFailed = Boolean(authError && !authError.startsWith("Unauthorized"));
 
 	useEffect(() => {
-		if (!isAdmin || requestedStats.current) return;
-		requestedStats.current = true;
+		if (!isAdmin || requestedCatalog.current) return;
+		requestedCatalog.current = true;
 		void fetchStats();
-	}, [isAdmin, fetchStats]);
+		void fetchSongs();
+		void fetchAlbums();
+	}, [isAdmin, fetchStats, fetchSongs, fetchAlbums]);
 
 	const cards = [
 		{ label: "Total Songs", value: stats.totalSongs, icon: ListMusic, color: "text-emerald-400 bg-emerald-500/10" },
@@ -80,7 +86,11 @@ const AdminPage = () => {
 							</div>
 						)}
 					</section>
-					<SongsLibrary />
+					<div className="mb-4 mt-8 flex gap-2" aria-label="Catalog view">
+						<button type="button" aria-pressed={activeCatalog === "songs"} onClick={() => setActiveCatalog("songs")} className={`rounded-md px-4 py-2 text-sm font-medium ${activeCatalog === "songs" ? "bg-zinc-700 text-white" : "bg-zinc-800/50 text-zinc-400 hover:bg-zinc-700/50"}`}>Songs</button>
+						<button type="button" aria-pressed={activeCatalog === "albums"} onClick={() => setActiveCatalog("albums")} className={`rounded-md px-4 py-2 text-sm font-medium ${activeCatalog === "albums" ? "bg-zinc-700 text-white" : "bg-zinc-800/50 text-zinc-400 hover:bg-zinc-700/50"}`}>Albums</button>
+					</div>
+					{activeCatalog === "songs" ? <SongsLibrary /> : <AlbumsLibrary />}
 					</>
 				)}
 			</div>
