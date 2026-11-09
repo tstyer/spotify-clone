@@ -13,6 +13,7 @@ interface PlayerStore {
 	togglePlay: () => void;
 	playNext: () => void;
 	playPrevious: () => void;
+	removeSong: (id: string) => void;
 }
 
 const announceSong = (song: Song) => {
@@ -89,5 +90,24 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
 		}
 		set({ currentSong: previousSong, currentIndex: currentIndex - 1, isPlaying: true });
 		announceSong(previousSong);
+	},
+
+	removeSong: (id) => {
+		const { queue, currentSong, isPlaying, currentIndex } = get();
+		if (!queue.some((song) => song._id === id)) return;
+		const remaining = queue.filter((song) => song._id !== id);
+		if (currentSong?._id !== id) {
+			set({ queue: remaining, currentIndex: remaining.findIndex((song) => song._id === currentSong?._id) });
+			return;
+		}
+		const nextSong = remaining[currentIndex] ?? remaining[currentIndex - 1] ?? null;
+		set({
+			queue: remaining,
+			currentSong: nextSong,
+			currentIndex: nextSong ? remaining.findIndex((song) => song._id === nextSong._id) : -1,
+			isPlaying: Boolean(nextSong) && isPlaying,
+		});
+		if (nextSong && isPlaying) announceSong(nextSong);
+		else announceIdle();
 	},
 }));

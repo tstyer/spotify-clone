@@ -1,6 +1,7 @@
 import { ListMusic } from "lucide-react";
 import { useMusicStore } from "@/stores/useMusicStore";
 import AddSongDialog from "./AddSongDialog";
+import DeleteSongDialog from "./DeleteSongDialog";
 
 const formatDuration = (seconds: number) => {
 	const minutes = Math.floor(seconds / 60);
@@ -36,9 +37,9 @@ const SongsLibrary = () => {
 				<p className="py-6 text-sm text-zinc-400">No songs in the catalog yet.</p>
 			) : (
 				<div className="overflow-x-auto">
-					<table className="w-full min-w-[620px] border-collapse text-left text-sm">
+					<table className="w-full min-w-[680px] border-collapse text-left text-sm">
 						<thead className="border-b border-zinc-700 text-zinc-400">
-							<tr><th scope="col" className="p-3 font-medium">Song</th><th scope="col" className="p-3 font-medium">Artist</th><th scope="col" className="p-3 font-medium">Added</th><th scope="col" className="p-3 text-right font-medium">Duration</th></tr>
+							<tr><th scope="col" className="p-3 font-medium">Song</th><th scope="col" className="p-3 font-medium">Artist</th><th scope="col" className="p-3 font-medium">Added</th><th scope="col" className="p-3 text-right font-medium">Duration</th><th scope="col" className="p-3 text-right font-medium">Actions</th></tr>
 						</thead>
 						<tbody>
 							{songs.map((song) => (
@@ -47,6 +48,7 @@ const SongsLibrary = () => {
 									<td className="p-3 text-zinc-300">{song.artist}</td>
 									<td className="p-3 text-zinc-400"><time dateTime={song.createdAt}>{song.createdAt.split("T")[0]}</time></td>
 									<td className="p-3 text-right text-zinc-400">{formatDuration(song.duration)}</td>
+									<td className="p-3 text-right"><DeleteSongDialog song={song} /></td>
 								</tr>
 							))}
 						</tbody>

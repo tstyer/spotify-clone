@@ -3,6 +3,7 @@ import toast from "react-hot-toast";
 import { create } from "zustand";
 import { axiosInstance } from "@/lib/axios";
 import type { Album, AlbumWithSongs, Song, Stats } from "@/types";
+import { usePlayerStore } from "./usePlayerStore";
 
 interface MusicStore {
 	songs: Song[];
@@ -27,7 +28,7 @@ interface MusicStore {
 	fetchTrendingSongs: () => Promise<void>;
 	fetchStats: () => Promise<void>;
 	fetchSongs: () => Promise<void>;
-	deleteSong: (id: string) => Promise<void>;
+	deleteSong: (id: string) => Promise<boolean>;
 	deleteAlbum: (id: string) => Promise<void>;
 }
 
@@ -174,12 +175,15 @@ export const useMusicStore = create<MusicStore>((set, get) => {
 						songs: state.currentAlbum.songs.filter((song) => song._id !== id),
 					},
 				}));
+				usePlayerStore.getState().removeSong(id);
 				toast.success("Song deleted successfully");
 				await get().fetchStats();
+				return true;
 			} catch (error) {
 				const message = errorMessage(error, "Unable to delete song");
 				set({ error: message });
 				toast.error(message);
+				return false;
 			} finally {
 				finish();
 			}
