@@ -1,6 +1,7 @@
 import { Disc3 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useMusicStore } from "@/stores/useMusicStore";
+import AddAlbumDialog from "./AddAlbumDialog";
 
 const AlbumsLibrary = () => {
 	const albums = useMusicStore((state) => state.albums);
@@ -10,12 +11,15 @@ const AlbumsLibrary = () => {
 
 	return (
 		<section aria-labelledby="albums-library-heading" className="rounded-lg border border-zinc-700/50 bg-zinc-800/50 p-4 sm:p-6">
-			<div className="mb-5 flex items-center gap-2">
-				<Disc3 className="size-5 text-violet-400" aria-hidden="true" />
-				<div>
-					<h2 id="albums-library-heading" className="text-lg font-semibold">Albums Library</h2>
-					<p className="text-sm text-zinc-400">Browse your album collection</p>
+			<div className="mb-5 flex flex-wrap items-center justify-between gap-4">
+				<div className="flex items-center gap-2">
+					<Disc3 className="size-5 text-violet-400" aria-hidden="true" />
+					<div>
+						<h2 id="albums-library-heading" className="text-lg font-semibold">Albums Library</h2>
+						<p className="text-sm text-zinc-400">Manage your album collection</p>
+					</div>
 				</div>
+				<AddAlbumDialog />
 			</div>
 			{status === "idle" || status === "loading" ? (
 				<p role="status" className="py-6 text-sm text-zinc-400">Loading albums...</p>
