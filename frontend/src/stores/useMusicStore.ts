@@ -29,7 +29,7 @@ interface MusicStore {
 	fetchStats: () => Promise<void>;
 	fetchSongs: () => Promise<void>;
 	deleteSong: (id: string) => Promise<boolean>;
-	deleteAlbum: (id: string) => Promise<void>;
+	deleteAlbum: (id: string) => Promise<boolean>;
 }
 
 const errorMessage = (error: unknown, fallback: string) => {
@@ -201,12 +201,15 @@ export const useMusicStore = create<MusicStore>((set, get) => {
 					madeForYouSongs: state.madeForYouSongs.filter((song) => song.albumId !== id),
 					trendingSongs: state.trendingSongs.filter((song) => song.albumId !== id),
 				}));
+				usePlayerStore.getState().removeAlbum(id);
 				toast.success("Album deleted successfully");
 				await get().fetchStats();
+				return true;
 			} catch (error) {
 				const message = errorMessage(error, "Unable to delete album");
 				set({ error: message });
 				toast.error(message);
+				return false;
 			} finally {
 				finish();
 			}

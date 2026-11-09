@@ -4,8 +4,8 @@ I'm building this Spotify-inspired app as a practice
 project for combining React, Express, MongoDB, authentication, audio playback,
 and real-time updates.
 
-**Status:** Work in progress. Playback, album pages, and chat are in place. I'm
-still building the music management tools.
+**Status:** Work in progress. Playback, album pages, chat, and the main music
+management tools are in place. The database still needs sample music.
 
 ## What works so far
 
@@ -22,10 +22,9 @@ still building the music management tools.
   conversation history, and send messages in real time.
 - The admin account can open Music Manager to see catalog totals and browse
   songs and albums. It can upload songs with audio and artwork, create albums
-  with artwork, and remove songs from the catalog.
+  with artwork, and remove songs or whole albums from the catalog.
 
-The catalog editing part of the admin dashboard is still in progress.
-The backend and client-side stores for much of that work already exist.
+Deleting records does not currently remove their uploaded media from Cloudinary.
 
 ## Tech stack
 
@@ -82,7 +81,6 @@ Open [http://localhost:3000](http://localhost:3000). Leave both terminals runnin
 - Add sample music to a fresh database through Music Manager once Cloudinary is
   configured. Until then, the home page and album sidebar show empty states.
   The seed commands in `backend/package.json` do not have scripts yet.
-- Add album deletion controls.
 
 To check the frontend code, run `npm run build` and `npm run lint` from
 `frontend`. The production build goes into `frontend/dist` and can be served by

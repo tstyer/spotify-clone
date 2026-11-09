@@ -2,6 +2,7 @@ import { Disc3 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useMusicStore } from "@/stores/useMusicStore";
 import AddAlbumDialog from "./AddAlbumDialog";
+import DeleteAlbumDialog from "./DeleteAlbumDialog";
 
 const AlbumsLibrary = () => {
 	const albums = useMusicStore((state) => state.albums);
@@ -32,9 +33,9 @@ const AlbumsLibrary = () => {
 				<p className="py-6 text-sm text-zinc-400">No albums in the catalog yet.</p>
 			) : (
 				<div className="overflow-x-auto">
-					<table className="w-full min-w-[560px] border-collapse text-left text-sm">
+					<table className="w-full min-w-[640px] border-collapse text-left text-sm">
 						<thead className="border-b border-zinc-700 text-zinc-400">
-							<tr><th scope="col" className="p-3 font-medium">Album</th><th scope="col" className="p-3 font-medium">Artist</th><th scope="col" className="p-3 font-medium">Release Year</th><th scope="col" className="p-3 text-right font-medium">Songs</th></tr>
+							<tr><th scope="col" className="p-3 font-medium">Album</th><th scope="col" className="p-3 font-medium">Artist</th><th scope="col" className="p-3 font-medium">Release Year</th><th scope="col" className="p-3 text-right font-medium">Songs</th><th scope="col" className="p-3 text-right font-medium">Actions</th></tr>
 						</thead>
 						<tbody>
 							{albums.map((album) => (
@@ -43,6 +44,7 @@ const AlbumsLibrary = () => {
 									<td className="p-3 text-zinc-300">{album.artist}</td>
 									<td className="p-3 text-zinc-400">{album.releaseYear}</td>
 									<td className="p-3 text-right text-zinc-400">{album.songs.length}</td>
+									<td className="p-3 text-right"><DeleteAlbumDialog album={album} /></td>
 								</tr>
 							))}
 						</tbody>

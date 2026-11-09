@@ -14,6 +14,7 @@ interface PlayerStore {
 	playNext: () => void;
 	playPrevious: () => void;
 	removeSong: (id: string) => void;
+	removeAlbum: (id: string) => void;
 }
 
 const announceSong = (song: Song) => {
@@ -101,6 +102,27 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
 			return;
 		}
 		const nextSong = remaining[currentIndex] ?? remaining[currentIndex - 1] ?? null;
+		set({
+			queue: remaining,
+			currentSong: nextSong,
+			currentIndex: nextSong ? remaining.findIndex((song) => song._id === nextSong._id) : -1,
+			isPlaying: Boolean(nextSong) && isPlaying,
+		});
+		if (nextSong && isPlaying) announceSong(nextSong);
+		else announceIdle();
+	},
+
+	removeAlbum: (id) => {
+		const { queue, currentSong, isPlaying, currentIndex } = get();
+		if (!queue.some((song) => song.albumId === id)) return;
+		const remaining = queue.filter((song) => song.albumId !== id);
+		if (currentSong?.albumId !== id) {
+			set({ queue: remaining, currentIndex: remaining.findIndex((song) => song._id === currentSong?._id) });
+			return;
+		}
+		const nextSong = queue.slice(currentIndex + 1).find((song) => song.albumId !== id)
+			?? queue.slice(0, currentIndex).reverse().find((song) => song.albumId !== id)
+			?? null;
 		set({
 			queue: remaining,
 			currentSong: nextSong,
