@@ -76,11 +76,21 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000). Leave both terminals running while using the app. The API runs at `http://localhost:5000`.
 
+### 3. Add sample songs (optional)
+
+From `backend`, with `MONGODB_URI` set in `backend/.env`:
+
+```powershell
+npm run seed:songs
+```
+
+This adds the 18 course sample tracks without deleting songs already in your database. The matching audio and cover files are in `frontend/public`. You can run the command again; it skips tracks already added by this seed. Cloudinary is not needed for these local sample files.
+
 ## Still to do
 
-- Add sample music to a fresh database through Music Manager once Cloudinary is
-  configured. Until then, the home page and album sidebar show empty states.
-  The seed commands in `backend/package.json` do not have scripts yet.
+- Add sample albums and connect them to the tracks. The `seed:albums` command
+  listed in `backend/package.json` does not have a script yet. Until then, the
+  album sidebar is empty on a fresh database.
 
 To check the frontend code, run `npm run build` and `npm run lint` from
 `frontend`. The production build goes into `frontend/dist` and can be served by
