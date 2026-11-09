@@ -1,5 +1,6 @@
 import { ListMusic } from "lucide-react";
 import { useMusicStore } from "@/stores/useMusicStore";
+import AddSongDialog from "./AddSongDialog";
 
 const formatDuration = (seconds: number) => {
 	const minutes = Math.floor(seconds / 60);
@@ -14,12 +15,15 @@ const SongsLibrary = () => {
 
 	return (
 		<section aria-labelledby="songs-library-heading" className="rounded-lg border border-zinc-700/50 bg-zinc-800/50 p-4 sm:p-6">
-			<div className="mb-5 flex items-center gap-2">
-				<ListMusic className="size-5 text-emerald-400" aria-hidden="true" />
-				<div>
-					<h2 id="songs-library-heading" className="text-lg font-semibold">Songs Library</h2>
-					<p className="text-sm text-zinc-400">Browse your music tracks</p>
+			<div className="mb-5 flex flex-wrap items-center justify-between gap-4">
+				<div className="flex items-center gap-2">
+					<ListMusic className="size-5 text-emerald-400" aria-hidden="true" />
+					<div>
+						<h2 id="songs-library-heading" className="text-lg font-semibold">Songs Library</h2>
+						<p className="text-sm text-zinc-400">Manage your music tracks</p>
+					</div>
 				</div>
+				<AddSongDialog />
 			</div>
 			{status === "idle" || status === "loading" ? (
 				<p role="status" className="py-6 text-sm text-zinc-400">Loading songs...</p>
