@@ -23,6 +23,7 @@ management tools are in place. Sample songs and albums can be added with seed co
 - The admin account can open Music Manager to see catalog totals and browse
   songs and albums. It can upload songs with audio and artwork, create albums
   with artwork, and remove songs or whole albums from the catalog.
+- Unknown page URLs show a 404 screen with links back to the app.
 
 Deleting records does not currently remove their uploaded media from Cloudinary.
 
@@ -91,7 +92,7 @@ The second command adds four course albums and links 14 of those tracks. Run the
 
 ## Still to do
 
-- Finish the remaining page and check the complete app flow.
+- Check the complete app flow with signed-in accounts, seeded music, and admin uploads.
 
 To check the frontend code, run `npm run build` and `npm run lint` from
 `frontend`. The production build goes into `frontend/dist` and can be served by
