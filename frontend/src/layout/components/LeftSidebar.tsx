@@ -2,6 +2,7 @@ import { SignedIn } from "@clerk/clerk-react";
 import { Home, Library, MessageCircle } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { NavLink } from "react-router-dom";
+import PlaylistSkeleton from "@/components/skeletons/PlaylistSkeleton";
 import { useMusicStore } from "@/stores/useMusicStore";
 
 const LeftSidebar = () => {
@@ -47,17 +48,7 @@ const LeftSidebar = () => {
 				</h2>
 				<div className="min-h-0 flex-1 space-y-2 overflow-y-auto">
 					{showSkeleton ? (
-						<div role="status" aria-label="Loading albums" className="space-y-2">
-							{Array.from({ length: 3 }, (_, index) => (
-								<div key={index} aria-hidden="true" className="flex animate-pulse items-center gap-3 rounded-md p-2">
-									<div className="size-12 shrink-0 rounded-md bg-zinc-700" />
-									<div className="flex-1 space-y-2">
-										<div className="h-4 w-3/4 rounded bg-zinc-700" />
-										<div className="h-3 w-1/2 rounded bg-zinc-700" />
-									</div>
-								</div>
-							))}
-						</div>
+						<PlaylistSkeleton />
 					) : albums.length === 0 ? (
 						<p className="px-3 text-sm text-zinc-400">No albums yet.</p>
 					) : (
