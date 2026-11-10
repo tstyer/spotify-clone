@@ -5,6 +5,7 @@ import Topbar from "@/components/Topbar";
 import { useChatStore } from "@/stores/useChatStore";
 import UsersList from "./components/UsersList";
 import MessageInput from "./components/MessageInput";
+import ChatHeader from "./components/ChatHeader";
 
 const formatTime = (date: string) => new Date(date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
@@ -52,10 +53,7 @@ const ChatPage = () => {
 					<section aria-label="Messages" className="flex min-w-0 flex-1 flex-col">
 						{selectedUser ? (
 							<>
-								<header className="flex items-center gap-3 border-b border-zinc-800 px-4 py-3">
-									<img src={selectedUser.imageUrl} alt="" className="size-9 rounded-full object-cover" />
-									<h2 className="truncate font-semibold">{selectedUser.fullName}</h2>
-								</header>
+								<ChatHeader />
 								<div className="min-h-0 flex-1 space-y-4 overflow-y-auto p-4" aria-live="polite">
 									{isLoading && messages.length === 0 ? (
 										<p role="status" className="text-sm text-zinc-400">Loading messages...</p>

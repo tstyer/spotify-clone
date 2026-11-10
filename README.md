@@ -19,7 +19,7 @@ management tools are in place. Sample songs and albums can be added with seed co
 - The backend has APIs for music, users, messages, and admin management. It uses
   Socket.IO for presence, listening activity, and direct messages.
 - Signed-in users can open Messages, choose another listener, read their
-  conversation history, and send messages in real time.
+  conversation history, see whether they're online, and send messages in real time.
 - The admin account can open Music Manager to see catalog totals and browse
   songs and albums. It can upload songs with audio and artwork, create albums
   with artwork, and remove songs or whole albums from the catalog.
