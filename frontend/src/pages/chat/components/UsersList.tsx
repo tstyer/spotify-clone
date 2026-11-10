@@ -1,3 +1,4 @@
+import UsersListSkeleton from "@/components/skeletons/UsersListSkeleton";
 import { useChatStore } from "@/stores/useChatStore";
 
 const UsersList = () => {
@@ -14,7 +15,7 @@ const UsersList = () => {
 			<h1 className="border-b border-zinc-800 px-3 py-4 text-center text-sm font-semibold sm:text-left sm:text-lg">Chats</h1>
 			<div className="min-h-0 flex-1 space-y-1 overflow-y-auto p-2">
 				{isLoading && users.length === 0 ? (
-					<p role="status" className="text-center text-xs text-zinc-400 sm:text-left">Loading...</p>
+					<UsersListSkeleton />
 				) : users.length === 0 ? (
 					<div className="text-center text-xs text-zinc-400 sm:text-left">
 						<p>{error ?? "No other listeners yet."}</p>
