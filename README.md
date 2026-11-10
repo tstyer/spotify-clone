@@ -5,7 +5,7 @@ project for combining React, Express, MongoDB, authentication, audio playback,
 and real-time updates.
 
 **Status:** Work in progress. Playback, album pages, chat, and the main music
-management tools are in place. The database still needs sample music.
+management tools are in place. Sample songs and albums can be added with seed commands.
 
 ## What works so far
 
@@ -76,21 +76,22 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000). Leave both terminals running while using the app. The API runs at `http://localhost:5000`.
 
-### 3. Add sample songs (optional)
+### 3. Add sample music (optional)
 
 From `backend`, with `MONGODB_URI` set in `backend/.env`:
 
 ```powershell
 npm run seed:songs
+npm run seed:albums
 ```
 
 This adds the 18 course sample tracks without deleting songs already in your database. The matching audio and cover files are in `frontend/public`. You can run the command again; it skips tracks already added by this seed. Cloudinary is not needed for these local sample files.
 
+The second command adds four course albums and links 14 of those tracks. Run the song seed first. The album seed keeps existing catalog records and can be run again without adding duplicate album or song links. Four songs remain as standalone tracks, as in the course data.
+
 ## Still to do
 
-- Add sample albums and connect them to the tracks. The `seed:albums` command
-  listed in `backend/package.json` does not have a script yet. Until then, the
-  album sidebar is empty on a fresh database.
+- Finish the remaining page and check the complete app flow.
 
 To check the frontend code, run `npm run build` and `npm run lint` from
 `frontend`. The production build goes into `frontend/dist` and can be served by
