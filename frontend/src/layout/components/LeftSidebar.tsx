@@ -8,7 +8,8 @@ import { useMusicStore } from "@/stores/useMusicStore";
 const LeftSidebar = () => {
 	const requestedAlbums = useRef(false);
 	const albums = useMusicStore((state) => state.albums);
-	const isLoading = useMusicStore((state) => state.isLoading);
+	const albumsStatus = useMusicStore((state) => state.albumsStatus);
+	const albumsError = useMusicStore((state) => state.albumsError);
 	const fetchAlbums = useMusicStore((state) => state.fetchAlbums);
 
 	useEffect(() => {
@@ -17,7 +18,7 @@ const LeftSidebar = () => {
 		void fetchAlbums();
 	}, [fetchAlbums]);
 
-	const showSkeleton = albums.length === 0 && (isLoading || !requestedAlbums.current);
+	const showSkeleton = albums.length === 0 && (albumsStatus === "idle" || albumsStatus === "loading");
 
 	return (
 		<div className="flex h-full min-h-0 flex-col gap-2 text-white">
@@ -47,10 +48,16 @@ const LeftSidebar = () => {
 					Albums
 				</h2>
 				<div className="min-h-0 flex-1 space-y-2 overflow-y-auto">
+					{albumsStatus === "error" && (
+						<div role="alert" className="px-3 text-sm text-red-400">
+							<p>{albumsError ?? "Unable to load albums."}</p>
+							<button type="button" onClick={() => void fetchAlbums()} className="mt-2 text-green-400 hover:underline">Try again</button>
+						</div>
+					)}
 					{showSkeleton ? (
 						<PlaylistSkeleton />
 					) : albums.length === 0 ? (
-						<p className="px-3 text-sm text-zinc-400">No albums yet.</p>
+						albumsStatus === "success" && <p className="px-3 text-sm text-zinc-400">No albums yet.</p>
 					) : (
 						albums.map((album) => (
 							<NavLink
