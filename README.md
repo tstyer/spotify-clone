@@ -1,13 +1,13 @@
 # Spotify Clone
 
-I'm building this Spotify-inspired app as a practice
+I built this Spotify-inspired app as a practice
 project for combining React, Express, MongoDB, authentication, audio playback,
 and real-time updates.
 
-**Status:** Work in progress. Playback, album pages, chat, and the main music
-management tools are in place. Sample songs and albums can be added with seed commands.
+**Status:** The course feature set is implemented and running locally. I added
+the sample music to my MongoDB database and checked the signed-in pages.
 
-## What works so far
+## Features
 
 - The home page loads featured, Made For You, and Trending songs from the API.
 - Songs can be played from their cards. The player has play/pause, track
@@ -90,13 +90,15 @@ This adds the 18 course sample tracks without deleting songs already in your dat
 
 The second command adds four course albums and links 14 of those tracks. Run the song seed first. The album seed keeps existing catalog records and can be run again without adding duplicate album or song links. Four songs remain as standalone tracks, as in the course data.
 
-## Still to do
+## Checking the app
 
-- Check the complete app flow with signed-in accounts, seeded music, and admin uploads.
+From `frontend`, run `npm run build` and `npm run lint`. The production build
+goes into `frontend/dist` and can be served by the backend when
+`NODE_ENV=production`.
 
-To check the frontend code, run `npm run build` and `npm run lint` from
-`frontend`. The production build goes into `frontend/dist` and can be served by
-the backend when `NODE_ENV=production`.
+With both servers running, I can browse the sample albums, play their tracks,
+sign in, and open the admin and chat pages. Testing a live conversation needs
+two signed-in accounts. Uploading new media needs valid Cloudinary credentials.
 
 ## Project structure
 
