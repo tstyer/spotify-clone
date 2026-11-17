@@ -59,23 +59,22 @@ Use the **same Clerk application** for the frontend and backend keys. Keep secre
 
 ### 2. Start both servers
 
-In one terminal, from the project root:
+Install dependencies in both folders once:
 
 ```powershell
 cd backend
 npm ci
-npm run dev
+cd ../frontend
+npm ci
 ```
 
-In a second terminal, also from the project root:
+Then, from `frontend`, start both the frontend and backend with one command:
 
 ```powershell
-cd frontend
-npm ci
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). Leave both terminals running while using the app. The API runs at `http://localhost:5000`.
+Open [http://localhost:3000](http://localhost:3000). Leave this terminal running while using the app. The API runs at `http://localhost:5000`.
 
 ### 3. Add sample music (optional)
 
